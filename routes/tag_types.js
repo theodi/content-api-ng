@@ -13,8 +13,13 @@ const known_tag_types = require('../presenters/tag_types.js');
   end
 */
 
-function tag_types(req, res) {
-    res.json(result_set(known_tag_types(), "All tag types"));
+function tag_types_json_formatter(req, res, db, url_helper) {
+    known_tag_types(db, url_helper).
+	then(tags => res.json(result_set(tags, "All tag types")));
 };
 
-module.exports = tag_types;
+function make_tag_types_json_formatter(db, url_helper) {
+    return (req, res) => tag_types_json_formatter(req, res, db, url_helper);
+} // make_tag_types_json_formatter
+
+module.exports = make_tag_types_json_formatter;

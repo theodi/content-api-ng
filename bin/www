@@ -5,8 +5,7 @@ const http = require('http');
 const config = require('config');
 
 // Get port from environment and store in Express.
-const port = normalizePort(process.env.PORT || config.get('express.port'));
-app.set('port', port);
+const port = normalizePort(config.get('express.port'));
 
 // Fire up the server
 const server = http.createServer(app);
