@@ -7,7 +7,12 @@ const mongo_config = require('config').get('mongo');
 const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.database}`);
 const collection = db.get('tags');
 
-exports.before = () => {
+function isNumber(v){
+   return typeof v === 'number' && isFinite(v);
+};
+
+describe("Tag Types", () => {
+  before(() => {
     collection.insert({
 	"_type": "Tag",
 	"title": "Team",
@@ -20,17 +25,13 @@ exports.before = () => {
 	"tag_type": "odi",
 	"tag_id": "role"
     });
-} // before
+  });
 
-exports.after = async () => {
+  after(async () => {
     await collection.remove({});
-} // after
+  }); // after
 
-function isNumber(v){
-   return typeof v === 'number' && isFinite(v);
-};
-
-exports.display_a_list_of_tag_types = done => {
+  it("display a list of tag types", (done) => {
     request.
 	get('/tag_types.json').
 	expect('Content-Type', 'application/json; charset=utf-8').
@@ -55,4 +56,5 @@ exports.display_a_list_of_tag_types = done => {
 		assert(false, "No JSON body found");
 	    done();
 	});
-} // list_of_tag_types
+  }); // list_of_tag_types
+});
