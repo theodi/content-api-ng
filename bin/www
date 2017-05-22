@@ -2,9 +2,10 @@
 
 const app = require('../app');
 const http = require('http');
+const config = require('config');
 
 // Get port from environment and store in Express.
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || config.express.port);
 app.set('port', port);
 
 // Fire up the server

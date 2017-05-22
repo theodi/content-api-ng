@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha -u exports test/integration/*"
+    "test": "mocha -u exports test/integration/*.js"
   },
   "repository": {
     "type": "git",
@@ -18,11 +18,12 @@
   },
   "homepage": "https://github.com/jezhiggins/content-api-ng#readme",
   "dependencies": {
-    "express": "^4.15.3"
+    "config": "^1.26.1",
+    "express": "^4.15.3",
+    "morgan": "^1.8.1"
   },
   "devDependencies": {
     "mocha": "^3.4.1",
-    "morgan": "^1.8.1",
     "supertest": "^3.0.0"
   }
 }
