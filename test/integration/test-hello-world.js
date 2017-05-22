@@ -1,27 +1,26 @@
-const supertest = require('supertest');
 const app = require('../../app');
+const request = require('supertest')(app);
 
-describe("smoke", () => {
-  it("hello world", done => {
-    supertest(app).
-      get('/').
-      expect('Content-Type', 'text/html; charset=utf-8').
-      expect(200, 'Hello World').
-      end(done);
-  }); // hello_world
+describe('Smoke', () => {
+  basic('/', 'text/html', 'Hello World');
 
-  it("hello.json", done => {
-    supertest(app).
-      get('/hello.json').
-      expect('Content-Type', 'application/json; charset=utf-8').
-      expect(200, { greeting: 'Hello World'}).
-      end(done);
-  }); // hello_json
+  basic('/hello.json', 'application/json', { greeting: 'Hello World'});
 
-  it("notfound", done => {
-    supertest(app).
+  it('notfound', done => {
+    request.
       get('/no-way-dude').
       expect(404).
       end(done);
   }); // not_found
 });
+
+/////////////////////////
+function basic(url, content_type, content) {
+  it(url, done => {
+    request.
+      get(url).
+      expect('Content-Type', `${content_type}; charset=utf-8`).
+      expect(200, content).
+      end(done);
+  });
+} // basic

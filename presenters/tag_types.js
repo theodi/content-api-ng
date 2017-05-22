@@ -25,22 +25,20 @@ function create_tag_type(tt_plural) {
 } // create_tag_type
 
 //////////////////////////////////////
-function count_tag_type(collection, tag_type) {
+function count_tag_type(collection, tag_type, results) {
   return collection.count({'tag_type': tag_type.singular}).
-    then(count => [tag_type.singular, count]);
+    then(count => results[tag_type.singular] = count);
 } // count_tag_type
 
 async function all_tag_counts(db) {
   const tags_collection = db.get('tags');
 
+  const counts = {};
   const countQueries = [];
   for (const tt of known_tag_types)
-    countQueries.push(count_tag_type(tags_collection, tt));
-  const countResults = await Promise.all(countQueries);
+    countQueries.push(count_tag_type(tags_collection, tt, counts));
+  await Promise.all(countQueries);
 
-  const counts = {};
-  for (const r of countResults)
-    counts[r[0]] = r[1];
   return counts;
 } // all_tag_counts
 
