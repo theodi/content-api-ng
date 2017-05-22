@@ -15,19 +15,6 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 ///////////////////
-function normalizePort(val) {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) // named pipe (we hope!)
-    return val;
-
-  if (port >= 0)
-    return port;
-
-  return false;
-} // normalizePort
-
-///////////////////
 // server callbacks
 function onError(error) {
   if (error.syscall !== 'listen')
@@ -58,4 +45,17 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
-}
+} // onListening
+
+///////////////////
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) // named pipe (we hope!)
+    return val;
+
+  if (port >= 0)
+    return port;
+
+  return false;
+} // normalizePort
