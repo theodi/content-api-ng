@@ -1,0 +1,19 @@
+{
+  "name": "content-api-ng",
+  "version": "1.0.0",
+  "description": "Reimplementation of content_api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jezhiggins/content-api-ng.git"
+  },
+  "author": "Jez Higgins, Dave Tarrant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jezhiggins/content-api-ng/issues"
+  },
+  "homepage": "https://github.com/jezhiggins/content-api-ng#readme"
+}
