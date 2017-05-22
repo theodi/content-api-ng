@@ -16,3 +16,10 @@ exports.hello_json = done => {
 	expect(200, { greeting: 'Hello World'}).
 	end(done);
 } // hello_json
+
+exports.not_found = done => {
+    supertest(app).
+	get('/no-way-dude').
+	expect(404).
+	end(done);
+} // not_found
