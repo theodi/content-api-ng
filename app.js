@@ -6,6 +6,10 @@ app.use(logger('dev'));
 
 app.get('/', (req, res) => res.send('Hello World'));
 
+app.get('/hello.json',
+	(req, res) => res.status(200).json({ greeting: 'Hello World' })
+       );
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
