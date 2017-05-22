@@ -26,21 +26,33 @@ exports.after = async () => {
     await collection.remove({});
 } // after
 
+function isNumber(v){
+   return typeof v === 'number' && isFinite(v);
+};
+
 exports.display_a_list_of_tag_types = done => {
-/*
     request.
-	get('/tag_type.json').
+	get('/tag_types.json').
 	expect('Content-Type', 'application/json; charset=utf-8').
 	expect(200).
 	end((err, res) => {
+	    //console.log(res.body);
+	    assert.equal(res.body.description, "All tag types");
+	    assert.equal(res.body.total, 13);
+	    assert.equal(res.body.start_index, 1);
+	    assert.equal(res.body.page_size, 13);
+	    assert.equal(res.body.current_page, 1);
+	    assert.equal(res.body.pages, 1);
 	    if (res.body.results)
 		for (const result of res.body.results) {
-		    assert(result.id);
-		    assert(result.type);
+		    assert(result.id, "Result must have an id");
+		    assert(result.type, "Result must have a type");
+		    assert(isNumber(result.total),"Result must have a total, and it must be numeric");
 		}
+	    else if (res.body)
+		assert(false, "JSON found, but not the right shape");
 	    else
 		assert(false, "No JSON body found");
 	    done();
 	});
-*/
 } // list_of_tag_types
