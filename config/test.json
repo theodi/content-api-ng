@@ -1,0 +1,5 @@
+{
+  "mongo": {
+    "database": "govuk_content_shared_test"
+  }
+}

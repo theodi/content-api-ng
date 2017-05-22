@@ -1,5 +1,10 @@
 {
   "express": {
     "port": 3000
+  },
+  "mongo": {
+    "hostname": "localhost",
+    "port": 27017,
+    "database": "govuk_content_publisher"
   }
 }
