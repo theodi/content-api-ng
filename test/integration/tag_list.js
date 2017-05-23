@@ -24,6 +24,7 @@ describe('Tag List', () => {
     test_tags(`filter by type=${type}`, `/tags.json?type=${type}`, body => {
       equal(body.description, `${type} tags`);
       equal(body.results.length, expected);
+      assert(body.results.every(r => r.details.type == type), `all tags should be have type=${type}`);
     });
 
   test_tags('fully formatted', '/tags.json', body => {
