@@ -42,14 +42,17 @@ async function all_tag_type_counts(db) {
   return counts;
 } // all_tag_type_counts
 
+function format(tag_type, url_helper, counts) {
+  return {
+    'id': url_helper.tag_type_url(tag_type),
+    'type': tag_type.singular,
+    'total': counts[tag_type.singular]
+  }
+} // format
+
 async function tag_types(db, url_helper) {
   const counts = await all_tag_type_counts(db);
-  return known_tag_types.
-    map(tt => { return {
-      'id': url_helper.tag_type_url(tt),
-      'type': tt.singular,
-      'total': counts[tt.singular]
-    }});
+  return known_tag_types.map(tt => format(tt, url_helper, counts));
 } // tag_types
 
 module.exports = tag_types;
