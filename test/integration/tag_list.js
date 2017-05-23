@@ -19,11 +19,26 @@ describe('Tag List', () => {
     equal(body.results.length, test_tag_data.length);
   });
 
+  // filter by type
   for (const [type, expected] of [['section', 3], ['person', 1], ['article', 0]])
     test_tags(`filter by type=${type}`, `/tags.json?type=${type}`, body => {
       equal(body.description, `${type} tags`);
       equal(body.results.length, expected);
     });
+
+  test_tags('fully formatted', '/tags.json', body => {
+    const tag = body.results.find(t => t.content_with_tag.slug == 'crime');
+    equal(tag.id, 'http://example.org/tags/sections/crime.json');
+    equal(tag.web_url, null);
+    equal(tag.title, 'CRIME!');
+    equal(tag.details.description, 'Wants crimes? Read on');
+    equal(tag.details.short_description, 'crime index');
+    equal(tag.details.type, 'section');
+    equal(tag.content_with_tag.id, 'http://example.org/with_tag.json?section=crime');
+    equal(tag.content_with_tag.web_url, 'http://theodi.test/tags/crime');
+    equal(tag.content_with_tag.slug, 'crime');
+    equal(tag.parent, null);
+  });
 
   /////////////////////////////////////////
   before(() => {
@@ -42,9 +57,11 @@ const test_tag_data = [
     'tag_id': 'writers'
   },
   {
-    'title': 'Crime',
+    'title': 'CRIME!',
     'tag_type': 'section',
-    'tag_id': 'crime'
+    'tag_id': 'crime',
+    'description': 'Wants crimes? Read on',
+    'short_description': 'crime index'
   },
   {
     'title': 'About',
