@@ -2,6 +2,15 @@
   "express": {
     "port": 3000
   },
+  "api": {
+    "hostname": "localhost",
+    "port": 3000,
+    "prefix": "",
+    "secure": false
+  },
+  "frontend": {
+    "webroot": "http://theodi.org"
+  },
   "mongo": {
     "hostname": "localhost",
     "port": 27017,

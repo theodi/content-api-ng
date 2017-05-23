@@ -1,4 +1,11 @@
 {
+  "api": {
+    "hostname": "example.org",
+    "port": null
+  },
+  "frontend": {
+    "webroot": "http://theodi.test"
+  },
   "mongo": {
     "database": "govuk_content_shared_test"
   }
