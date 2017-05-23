@@ -27,6 +27,8 @@ app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
 app.get('/tag_types.json', tag_types_json(db, url_helper));
 app.get('/tags.json', tags_json(db, url_helper));
 
+console.log("Available endpoints are " + app._router.stack.filter(r => r.route).map(r => r.route.path).join(', '));
+
 ////////////////////////////////////////////
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
