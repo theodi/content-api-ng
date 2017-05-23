@@ -11,34 +11,52 @@ const tags_collection = db.get('tags');
 describe('Tag List', () => {
   test_tags('list of tags', '/tags.json', body => {
     equal(body.description, 'All tags');
-    equal(body.total, 2);
+    equal(body.total, test_tag_data.length);
     equal(body.start_index, 1);
-    equal(body.page_size, 2);
+    equal(body.page_size, test_tag_data.length);
     equal(body.current_page, 1);
     equal(body.pages, 1);
-    equal(body.results.length, 2);
+    equal(body.results.length, test_tag_data.length);
   });
+
+  for (const [type, expected] of [['section', 3], ['person', 1], ['article', 0]])
+    test_tags(`filter by type=${type}`, `/tags.json?type=${type}`, body => {
+      equal(body.description, `${type} tags`);
+      equal(body.results.length, expected);
+    });
 
   /////////////////////////////////////////
   before(() => {
-    tags_collection.insert([
-      {
-	"title": "Team",
-	"tag_type": "person",
-	"tag_id": "writers"
-      },
-      {
-	"title": "Crime",
-	"tag_type": "section",
-	"tag_id": "crime"
-      }
-    ]);
+    tags_collection.insert(test_tag_data);
   });
 
   after(() => {
     tags_collection.remove({});
   });
 });
+
+const test_tag_data = [
+  {
+    'title': 'Team',
+    'tag_type': 'person',
+    'tag_id': 'writers'
+  },
+  {
+    'title': 'Crime',
+    'tag_type': 'section',
+    'tag_id': 'crime'
+  },
+  {
+    'title': 'About',
+    'tag_type': 'section',
+    'tag_id': 'about'
+  },
+  {
+    'title': 'Membership',
+    'tag_type': 'section',
+    'tag_id': 'membership'
+  }
+];
 
 //////////////////////////////
 function test_tags(label, url, test) {
