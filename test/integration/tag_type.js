@@ -9,31 +9,28 @@ const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.da
 const tags_collection = db.get('tags');
 
 describe("Tag Types", () => {
-  test_tag_types("display a list of tag types", res => {
-    equal(res.body.description, "All tag types");
-    equal(res.body.total, 13);
-    equal(res.body.start_index, 1);
-    equal(res.body.page_size, 13);
-    equal(res.body.current_page, 1);
-    equal(res.body.pages, 1);
-    if (res.body.results)
-      for (const result of res.body.results) {
-	assert(result.id, "Result must have an id");
-	assert(result.type, "Result must have a type");
-	assert(isNumber(result.total),"Result must have a total, and it must be numeric");
-      }
-    else if (res.body)
-      assert(false, "JSON found, but not the right shape");
+  test_tag_types("display a list of tag types", body => {
+    equal(body.description, "All tag types");
+    equal(body.total, 13);
+    equal(body.start_index, 1);
+    equal(body.page_size, 13);
+    equal(body.current_page, 1);
+    equal(body.pages, 1);
+    for (const result of body.results) {
+      assert(result.id, "Result must have an id");
+      assert(result.type, "Result must have a type");
+      assert(isNumber(result.total),"Result must have a total, and it must be numeric");
+    } // for ...
   }); // list_of_tag_types
 
-  test_tag_types("links to tag type url", res => {
-    const section = res.body.results.find(s => s.type == "section");
+  test_tag_types("links to tag type url", body => {
+    const section = body.results.find(s => s.type == "section");
     equal(section.id, "http://example.org/tags/sections.json");
   });
 
-  test_tag_types("include the number of tags of each type", res => {
+  test_tag_types("include the number of tags of each type", body => {
     for (const [type, expected] of [['person',2],['section',1],['article',0]]) {
-      const tag_type = res.body.results.find(s => s.type == type);
+      const tag_type = body.results.find(s => s.type == type);
       equal(tag_type.total, expected);
     } // for ...
   });
@@ -57,7 +54,7 @@ describe("Tag Types", () => {
 	"tag_id": "jez"
       }
     ]);
-  });
+  }); // before
 
   after(() => {
     tags_collection.remove({});
@@ -72,7 +69,9 @@ function test_tag_types(label, test) {
       expect('Content-Type', 'application/json; charset=utf-8').
       expect(200).
       end((err, res) => {
-	test(res);
+	if (!res.body)
+	  assert(false, "No JSON found");
+	test(res.body);
 	done();
       });
   });

@@ -30,7 +30,7 @@ function count_tag_type(collection, tag_type, results) {
     then(count => results[tag_type.singular] = count);
 } // count_tag_type
 
-async function all_tag_counts(db) {
+async function all_tag_type_counts(db) {
   const tags_collection = db.get('tags');
 
   const counts = {};
@@ -40,10 +40,10 @@ async function all_tag_counts(db) {
   await Promise.all(countQueries);
 
   return counts;
-} // all_tag_counts
+} // all_tag_type_counts
 
 async function tag_types(db, url_helper) {
-  const counts = await all_tag_counts(db);
+  const counts = await all_tag_type_counts(db);
   return known_tag_types.
     map(tt => { return {
       'id': url_helper.tag_type_url(tt),

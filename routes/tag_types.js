@@ -15,8 +15,8 @@ const known_tag_types = require('../presenters/tag_types.js');
 
 function tag_types_json_formatter(req, res, db, url_helper) {
   known_tag_types(db, url_helper).
-    then(tags => res.json(result_set(tags, "All tag types")));
-};
+    then(tts => res.json(result_set(tts, "All tag types")));
+} // tag_types_json_formatter
 
 function make_tag_types_json_formatter(db, url_helper) {
   return (req, res) =>
