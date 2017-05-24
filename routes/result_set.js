@@ -6,8 +6,8 @@ function present(items, description = "No description", pagination = unpaginated
     "results": items
   };
 
-  for (const k of Object.keys(pagination))
-    result_set[k] = pagination[k];
+  for (const [k, v] of Object.entries(pagination))
+    result_set[k] = v;
 
   return result_set;
 } // present
