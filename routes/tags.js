@@ -1,24 +1,30 @@
 const result_set = require('./result_set.js');
 const tags = require('../presenters/tags.js');
 
-function options(req) {
-  const o = { };
-
-  // not sure parent_id or root_sections are used - no tests, and no data with parent_id
-  for (const [opt, q] of [['tag_type', 'type'], ['parent_id', 'parent_id']])
-    if (req.query[q])
-      o[opt] = req.query[q];
-  if (req.query['root_sections'])
-    o['parent_id'] = null;
-
-  return o;
-} // options
+function format(tag, url_helper) {
+  return {
+    'id': url_helper.tag_url(tag),
+    'web_url': null,
+    'title': tag.title,
+    'details': {
+      'description': tag.description,
+      'short_description': tag.short_description,
+      'type': tag.tag_type
+    },
+    'content_with_tag': {
+      'id': url_helper.with_tag_url(tag),
+      'web_url': url_helper.tag_web_url(tag),
+      'slug': tag.tag_id
+    }
+  };
+} // format
 
 function tags_json_formatter(req, res, db, url_helper) {
-  const opts = options(req);
-  const label = opts.tag_type ? `${opts.tag_type} tags` : "All tags";
+  const tag_type = req.query['type'];
+  const label = tag_type ? `${tag_type} tags` : "All tags";
 
-  tags(opts, db, url_helper).
+  tags.by_type(tag_type, db).
+    then(ts => ts.map(tag => format(tag, url_helper))).
     then(ts => res.json(result_set(ts, label)));
 } // tags_json_formatter
 
