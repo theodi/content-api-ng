@@ -20,6 +20,7 @@ describe('With Tag', () => {
   expect_redirect('to typed url with order by', '?tag=trout&order_by=date', '?article=trout&order_by=date');
   expect_redirect('to typed url with author', '?tag=trout&author=jez', '?article=trout&author=jez');
   expect_redirect('to content type', '?tag=job', '?type=job');
+  expect_redirect('when filtering by multiple tags', '?tag=crime,business', '?section=crime%2Cbusiness');
 
   /////////////////////////////////////////
   before(() => {
@@ -56,11 +57,25 @@ const test_tag_data = [
     'tag_id': 'farmers'
   },
 
+  //
   {
     'title': 'Trout',
     'tag_type': 'article',
     'tag_id': 'trout'
+  },
+
+  //
+  {
+    'title': 'Crime',
+    'tag_type': 'section',
+    'tag_id': 'crime'
+  },
+  {
+    'title': 'Business',
+    'tag_type': 'section',
+    'tag_id': 'business'
   }
+
 ];
 
 ////////////////////////////////////////

@@ -6,6 +6,7 @@ const default_url = url_helper('test');
 
 const about = { tag_id: 'about', tag_type: 'section' };
 const halibut = { tag_id: 'halibut', tag_type: 'fish' };
+const trout = { tag_id: 'trout', tag_type: 'fish' };
 
 describe('URL Helper', () => {
   it('app url', () => {
@@ -36,6 +37,7 @@ describe('URL Helper', () => {
     equal(default_url.with_tag_url(about), 'http://example.org/with_tag.json?section=about');
     equal(default_url.with_tag_url(halibut), 'http://example.org/with_tag.json?fish=halibut');
     equal(default_url.with_tag_url([halibut, about]), 'http://example.org/with_tag.json?fish=halibut&section=about');
+    equal(default_url.with_tag_url([halibut, trout]), 'http://example.org/with_tag.json?fish=halibut%2Ctrout');
     equal(default_url.with_tag_url(about, { 'sort': 'title' }), 'http://example.org/with_tag.json?section=about&sort=title');
   });
 
