@@ -7,8 +7,9 @@ const mongo_config = require('config').get('mongo');
 
 const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.database}`);
 const tags_collection = db.get('tags');
+const artefacts_collection = db.get('artefacts');
 
-describe('With Tag', () => {
+describe('With Tag, tag param', () => {
   expect_404('no tag query param');
   expect_404('empty tag query param', '?tag=');
   expect_404('unknown tag', '?tag=monkeypunks');
@@ -32,6 +33,99 @@ describe('With Tag', () => {
   });
 });
 
+describe('With Tag, type param', () => {
+  for (const [type, count] of [['job', 5], ['case_study', 35]])
+    test_with_tag(
+      `return live artefacts of type ${type}`,
+      `?type=${type}`,
+      body => equal(body.results.length, count)
+    );
+
+  for (const [type, count] of [['jobs', 5], ['case_studies', 35]])
+    test_with_tag(
+      `return live artefacts of plural type ${type}`,
+      `?type=${type}`,
+      body => equal(body.results.length, count)
+    );
+
+  test_with_tag(
+    "return zero-length list if no artefacts of type",
+    "?type=article",
+    body => equal(body.results.length, 0)
+  );
+
+  for (const [role, title] of [['foo', 'course foo'], ['bar', 'course bar']])
+    test_with_tag(
+      `return artefacts for role ${role}`,
+      `?type=course&role=${role}`,
+      body => {
+	equal(body.results.length, 1);
+	equal(body.results[0].title, title);
+      }
+    );
+
+  /////////////////////////////////////////
+  before(() => {
+    for (let i = 0; i != 5; ++i)
+      artefacts_collection.insert({
+	'title': `job ${i}`,
+	'state': 'live',
+	'kind': 'job',
+	'tag_ids': ['odi', 'job']
+      });
+    artefacts_collection.insert({
+      'title': `job not live`,
+      'state': 'pending',
+      'kind': 'job',
+      'tag_ids': ['odi', 'job']
+    });
+    for (let i = 0; i != 35; ++i)
+      artefacts_collection.insert({
+	'title': `case study ${i}`,
+	'state': 'live',
+	'kind': 'case_study',
+	'tag_ids': ['odi', 'case_studies']
+      });
+    artefacts_collection.insert({
+      'title': `case study cancelled`,
+      'state': 'cancelled',
+      'kind': 'case_study',
+      'tag_ids': ['odi', 'case_studies']
+    });
+
+    for (const r of ['foo', 'bar'])
+      artefacts_collection.insert({
+	'title': `course ${r}`,
+	'state': 'live',
+	'kind': 'course',
+	'tag_ids': [r, 'course']
+      });
+  });
+
+  after(() => {
+    artefacts_collection.remove({});
+  });
+});
+
+function test_with_tag(label, query, test, header_to_check, header_value) {
+  it(label, done => {
+    let t = request.
+	get(`/with_tag.json${query}`).
+	expect('Content-Type', 'application/json; charset=utf-8');
+    if (header_to_check)
+      t = t.expect(header_to_check, header_value);
+
+    t.expect(200).
+      end((err, res) => {
+	if (!res.body)
+	  assert(false, 'No JSON found');
+	test(res.body);
+	done(err, res);
+      });
+  });
+}
+
+////////////////////////////////////////////
 const test_tag_data = [
   // ambiguous tag
   {

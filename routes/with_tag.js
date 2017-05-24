@@ -2,6 +2,7 @@ const result_set = require('./result_set.js');
 const error_404 = require('./error_404.js');
 const content_types = require('../presenters/content_types.js');
 const Tags = require('../presenters/tags.js');
+const Artefacts = require('../presenters/artefacts.js');
 const singular = require('pluralize').singular;
 
 //////////////////////////////////////////////////////////////
@@ -25,7 +26,19 @@ function with_tag_formatter(req, res, db, url_helper) {
   if (req.query["tag"])
     return handle_tag_param(req, res, db, url_helper);
 
-  error_404(res);
+  let description = '';
+  let artefacts = null;
+  if (req.query["type"]) {
+    const type = singular(req.query["type"]);
+    description = `All content with the ${type} type`;
+    artefacts = Artefacts.by_type(db, type, req.query["role"], req.query["sort"]);
+  }
+
+  if (artefacts)
+    artefacts.
+    then(a => res.json(result_set(a, description)));
+  else
+    error_404(res);
 } // with_tags_formatter
 
 function make_with_tag_formatter(db, url_helper) {
