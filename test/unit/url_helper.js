@@ -38,4 +38,9 @@ describe('URL Helper', () => {
     equal(default_url.with_tag_url([halibut, about]), 'http://example.org/with_tag.json?fish=halibut&section=about');
     equal(default_url.with_tag_url(about, { 'sort': 'title' }), 'http://example.org/with_tag.json?section=about&sort=title');
   });
+
+  it('with_type', () => {
+    equal(default_url.with_type_url('muffin'), 'http://example.org/with_tag.json?type=muffin');
+    equal(default_url.with_type_url('truffle', { 'sort': 'title' }), 'http://example.org/with_tag.json?type=truffle&sort=title');
+  });
 });
