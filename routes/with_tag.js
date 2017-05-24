@@ -20,7 +20,7 @@ function modifier_params(req) {
   const m = {};
   for (const p of modifiers)
     if (req.query[p])
-      m[p] = req.param[p];
+      m[p] = req.query[p];
   return m;
 } // modifier_params
 
@@ -34,7 +34,7 @@ async function handle_tag_param(req, res, db, url_helper) {
   if (possible_tags.length == 1)
     res.redirect(url_helper.with_tag_url(possible_tags, modifiers));
   else if (content_types.some(ct => ct == singular(tag)))
-    res.redirect(url_helper.with_tag_url(tag, modifiers));
+    res.redirect(url_helper.with_type_url(tag, modifiers));
   else
     error_404(res);
 } // handle_tag_param
