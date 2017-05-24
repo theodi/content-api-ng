@@ -1,5 +1,5 @@
 const result_set = require('./result_set.js');
-const tags = require('../presenters/tags.js');
+const tags = require('../mongo_documents/tags.js');
 
 function format(tag, url_helper) {
   return {

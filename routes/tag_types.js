@@ -1,5 +1,5 @@
 const result_set = require('./result_set.js');
-const tag_types = require('../presenters/tag_types.js');
+const tag_types = require('../mongo_documents/tag_types.js');
 /*
   get "/tag_types.json" do
 

@@ -1,8 +1,8 @@
 const result_set = require('./result_set.js');
 const error_404 = require('./error_404.js');
-const content_types = require('../presenters/content_types.js');
-const Tags = require('../presenters/tags.js');
-const Artefacts = require('../presenters/artefacts.js');
+const content_types = require('../mongo_documents/content_types.js');
+const Tags = require('../mongo_documents/tags.js');
+const Artefacts = require('../mongo_documents/artefacts.js');
 const singular = require('pluralize').singular;
 
 //////////////////////////////////////////////////////////////
