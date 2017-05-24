@@ -42,17 +42,17 @@ async function all_tag_type_counts(db) {
   return counts;
 } // all_tag_type_counts
 
-function format(tag_type, url_helper, counts) {
+function tag_type_with_count(tt, counts) {
   return {
-    'id': url_helper.tag_type_url(tag_type),
-    'type': tag_type.singular,
-    'total': counts[tag_type.singular]
-  }
-} // format
+    'singular': tt.singular,
+    'plural': tt.plural,
+    'total': counts[tt.singular]
+  };
+} // tag_type_with_count
 
-async function tag_types(db, url_helper) {
+async function with_counts(db) {
   const counts = await all_tag_type_counts(db);
-  return known_tag_types.map(tt => format(tt, url_helper, counts));
+  return known_tag_types.map(tt => tag_type_with_count(tt, counts));
 } // tag_types
 
-module.exports = tag_types;
+exports.with_counts = with_counts;
