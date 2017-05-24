@@ -1,4 +1,4 @@
-const result_set = require('../presenters/result_set.js');
+const result_set = require('./result_set.js');
 const tags = require('../presenters/tags.js');
 
 function options(req) {

@@ -1,4 +1,4 @@
-const result_set = require('../presenters/result_set.js');
+const result_set = require('./result_set.js');
 const known_tag_types = require('../presenters/tag_types.js');
 /*
   get "/tag_types.json" do
