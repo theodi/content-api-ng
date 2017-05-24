@@ -12,10 +12,14 @@ describe('With Tag', () => {
   expect_404('no tag query param');
   expect_404('empty tag query param', '?tag=');
   expect_404('unknown tag', '?tag=monkeypunks');
-  expect_404('multiple tags found', '?tag=ambiguity');
+  expect_404('multiple tag instances found', '?tag=ambiguity');
 
-  expect_redirect('ignore keywords', '?tag=farmers', '?section=farmers');
   expect_redirect('to typed url', '?tag=trout', '?article=trout');
+  expect_redirect('to typed url, ignoring keywords', '?tag=farmers', '?section=farmers');
+  expect_redirect('to typed url with sort', '?tag=trout&sort=date', '?article=trout&sort=date');
+  expect_redirect('to typed url with order by', '?tag=trout&order_by=date', '?article=trout&order_by=date');
+  expect_redirect('to typed url with author', '?tag=trout&author=jez', '?article=trout&author=jez');
+  expect_redirect('to content type', '?tag=job', '?type=job');
 
   /////////////////////////////////////////
   before(() => {
@@ -70,7 +74,7 @@ function expect_404(label, query = '') {
 } // expect_404
 
 function expect_redirect(label, query, location) {
-  it(`redirect when ${label}`, done => {
+  it(`redirect ${label}`, done => {
     request.
       get(`/with_tag.json${query}`).
       expect(302).
