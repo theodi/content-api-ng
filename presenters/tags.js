@@ -13,5 +13,18 @@ function by_type(type = '<all>', db) {
   return find_tags({'tag_type': type}, db);
 } // by_type
 
+function by_ids(tag_ids, db) {
+  // find tags matching the supplied ids, ignoring keywords
+  const query = {
+    '$and': [
+      { 'tag_id': { '$in': tag_ids.split(',') } },
+      { 'tag_type': { '$nin': ['keyword'] } }
+    ]
+  };
+  return find_tags(query, db);
+} // by_ids
+
+
 module.exports = tags;
 tags.by_type = by_type;
+tags.by_ids = by_ids;
