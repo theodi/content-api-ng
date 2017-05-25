@@ -41,12 +41,14 @@ function format(artefact, url_helper) {
   stream_of(BASE_FIELDS).flatten().
     filter(f => artefact[f] !== undefined).
     map(f => [f, artefact[f]]).
+    map(fv => convertIfDate(...fv)).
     forEach(([f, v]) => pretty.details[f] = v);
 
   stream_of(OPTIONAL_FIELDS, ODI_FIELDS).flatten().
     filter(f => artefact.edition[f] !== undefined).
     map(f => [f, artefact.edition[f]]).
     map(fv => convertIfGovspeak(...fv)).
+    map(fv => convertIfDate(...fv)).
     forEach(([f, v]) => pretty.details[f] = v);
 
   return pretty;
@@ -73,6 +75,13 @@ function convertIfGovspeak(f, v) {
 
   return [f, markdown.toHTML(v)];
 } // convertIfGovspeak
+
+function convertIfDate(f, v) {
+  if (!f.endsWith('date'))
+    return [f, v];
+
+  return [f, content_api_date(v)];
+} // convertIfDate
 
 function updated_date(artefact) {
   try {
