@@ -24,7 +24,18 @@ function by_ids(tag_ids, db) {
   return find_tags(query, db);
 } // by_ids
 
+function scoped(tag_id_array, db) {
+  // find tags matching the supplied ids, ignoring keywords
+  const query = {
+    '$and': [
+      { 'tag_id': { '$in': tag_id_array } },
+      { 'tag_type': { '$nin': ['keyword', 'role'] } }
+    ]
+  };
+  return find_tags(query, db);
+} // scoped
 
 module.exports = tags;
 tags.by_type = by_type;
 tags.by_ids = by_ids;
+tags.scoped = scoped;
