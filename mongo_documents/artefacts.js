@@ -1,4 +1,5 @@
 const Tags = require('./tags.js');
+const stream_from = require('rillet').from;
 
 function by_type(db, type, role = 'odi', sort = '<not-set>') {
   const query = {
@@ -33,7 +34,7 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}) {
   return find(db, query, sort);
 } // by_tags
 
-function find(db, query, sort = '<not-set>') {
+async function find(db, query, sort = '<not-set>') {
   query['state'] = 'live'; // we only want live objects
 
   const artefacts_collection = db.get('artefacts');
@@ -42,31 +43,53 @@ function find(db, query, sort = '<not-set>') {
   if (sort == 'date')
     results = results.sort({'created_at': -1});
 
-  return results.then(artefacts => {
-    artefacts.forEach(a => {
-      a.db = db;
-      a.original_tag_ids = a.tag_ids;
-      a.load_tags = async function() {
-	this.tags_ = await Tags.scoped(this.original_tag_ids, this.db);
-	this.tag_ids_ = this.tags_.map(t => t.tag_id);
-      };
-      a.load_tags_if_not = function(field) {
-	if (!this[field])
-	  this.load_tags();
-	return this[field];
-      }; // load_tags_if_not
-      // lazy properties
-      Object.defineProperty(a, 'tags', {
-	get: function() { return this.load_tags_if_not('tags_'); }
-      });
-      Object.defineProperty(a, 'tag_ids', {
-	get: function() { return this.load_tags_if_not('tag_ids_'); }
-      });
+  const artefacts = await results;
 
-    });
-    return artefacts;
-  });
+  const all_tag_ids =
+	stream_from(artefacts).
+    	map(a => a.tag_ids).
+	flatten().
+	filter(uniq_tag_ids()).
+	toArray();
+
+  const all_tags = await fetch_all_tags(all_tag_ids, db);
+
+  artefacts.forEach(a => populate_tags(a, all_tags));
+
+  return artefacts;
 } // find
 
 exports.by_type = by_type;
 exports.by_tags = by_tags;
+
+///////////////////////////
+async function fetch_all_tags(all_tag_ids, db) {
+  const tags = {};
+  for (const tag of await Tags.scoped(all_tag_ids, db))
+    tags[tag.tag_id] = tag;
+  return tags;
+} // all_tags
+
+function populate_tags(artefact, all_tags) {
+  const tags = [];
+  const tag_ids = [];
+
+  for (const tag_id of artefact.tag_ids) {
+    if (!all_tags[tag_id])
+      continue;
+    tag_ids.push(tag_id);
+    tags.push(all_tags[tag_id]);
+  } // for ...
+
+  artefact.tag_ids = tag_ids;
+  artefact.tags = tags;
+} // populate_tags
+
+function uniq_tag_ids() {
+  const seen = {};
+  return (tagid) => {
+    if (seen[tagid])
+      return false;
+    return seen[tagid] = true;
+  };
+} // uniq

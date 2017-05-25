@@ -1,5 +1,4 @@
-
-function format(tag, url_helper) {
+function format_tag(tag, url_helper) {
   return {
     'id': url_helper.tag_url(tag),
     'web_url': null,
@@ -15,6 +14,12 @@ function format(tag, url_helper) {
       'slug': tag.tag_id
     }
   };
+} // format_tag
+
+function format(tag, url_helper) {
+  if (Array.isArray(tag))
+    return tag.map(t => format_tag(t, url_helper));
+  return format_tag(tag, url_helper);
 } // format
 
 module.exports = format;

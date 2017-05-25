@@ -1,4 +1,5 @@
 const stream_of = require('rillet').of;
+const tag_format = require('./tags.js');
 
 function edition_or_artefact(artefact, edition_field, artefact_field) {
   if (artefact.edition && artefact.edition[edition_field])
@@ -28,7 +29,11 @@ function basic_artefact_format(artefact, url_helper) {
 } // basic_artefact_format
 
 function format(artefact, url_helper) {
-  return basic_artefact_format(artefact, url_helper);
+  const pretty = basic_artefact_format(artefact, url_helper);
+
+  pretty.tags = tag_format(artefact.tags, url_helper);
+
+  return pretty;
 } // format
 
 module.exports = format;
