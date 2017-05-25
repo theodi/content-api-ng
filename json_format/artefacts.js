@@ -39,12 +39,12 @@ function format(artefact, url_helper) {
   pretty.details = {}
 
   stream_of(BASE_FIELDS).flatten().
-    filter(f => artefact[f]).
+    filter(f => artefact[f] !== undefined).
     map(f => [f, artefact[f]]).
     forEach(([f, v]) => pretty.details[f] = v);
 
   stream_of(OPTIONAL_FIELDS, ODI_FIELDS).flatten().
-    filter(f => artefact.edition[f]).
+    filter(f => artefact.edition[f] !== undefined).
     map(f => [f, artefact.edition[f]]).
     map(fv => convertIfGovspeak(...fv)).
     forEach(([f, v]) => pretty.details[f] = v);
