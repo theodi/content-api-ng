@@ -8,6 +8,7 @@ const mongo_config = require('config').get('mongo');
 const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.database}`);
 const tags_collection = db.get('tags');
 const artefacts_collection = db.get('artefacts');
+const editions_collection = db.get('editions');
 
 describe('With Tag, type param', () => {
   for (const [type, count] of [['job', 5], ['case_study', 35]])
@@ -43,47 +44,83 @@ describe('With Tag, type param', () => {
   /////////////////////////////////////////
   before(async () => {
     const test_artefacts = [];
+    const test_editions = [];
 
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i != 5; ++i) {
       test_artefacts.push({
 	'title': `job ${i}`,
 	'state': 'live',
 	'kind': 'job',
+	'slug': `job-${i}`,
 	'tag_ids': ['odi', 'job']
       });
+      test_editions.push({
+	'title': `job ${i}`,
+	'slug': `job-${i}`,
+	'state': 'published'
+      });
+    } // for ...
     test_artefacts.push({
       'title': `job not live`,
       'state': 'pending',
       'kind': 'job',
+      'slug': 'job-not',
       'tag_ids': ['odi', 'job']
     });
-    for (let i = 0; i != 35; ++i)
+    test_editions.push({
+      'title': `job dead`,
+      'slug': 'job-not',
+      'state': 'published'
+    });
+    for (let i = 0; i != 35; ++i) {
       test_artefacts.push({
 	'title': `case study ${i}`,
 	'state': 'live',
 	'kind': 'case_study',
+	'slug': `case-study-${i}`,
 	'tag_ids': ['odi', 'case_studies']
       });
+      test_editions.push({
+	'title': `study ${i}`,
+	'slug': `case-study-${i}`,
+	'state': 'published'
+      });
+    }
     test_artefacts.push({
       'title': `case study cancelled`,
       'state': 'cancelled',
       'kind': 'case_study',
+      'slug': 'case-study-not',
       'tag_ids': ['odi', 'case_studies']
     });
+    test_editions.push({
+      'title': `study not`,
+      'slug': `case-study-not'}`,
+      'state': 'published'
+    });
 
-    for (const r of ['foo', 'bar'])
+    for (const r of ['foo', 'bar']) {
       test_artefacts.push({
 	'title': `course ${r}`,
 	'state': 'live',
+	'slug': `course-${r}`,
 	'kind': 'course',
 	'tag_ids': [r, 'course']
       });
+      test_editions.push({
+	'title': `course ${r}`,
+	'slug': `course-${r}`,
+	'state': 'published'
+      });
+    }
 
     await artefacts_collection.insert(test_artefacts);
+    await editions_collection.insert(test_editions);
   });
 
   after(() => {
     artefacts_collection.remove({});
+    editions_collection.remove({});
   });
 });
 

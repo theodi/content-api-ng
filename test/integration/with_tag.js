@@ -8,6 +8,7 @@ const mongo_config = require('config').get('mongo');
 const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.database}`);
 const tags_collection = db.get('tags');
 const artefacts_collection = db.get('artefacts');
+const editions_collection = db.get('editions');
 
 describe('With Tag', () => {
   test_with_tag(
@@ -20,7 +21,7 @@ describe('With Tag', () => {
       equal(article.title, 'Farmers Rule');
       assert(article.tag_ids.some(t => t == 'farmers'));
       equal(article.details.description, 'A description of farmers');
-      equal(article.details.except, 'A really long description of farmers');
+      equal(article.details.excerpt, 'A really long description of farmers');
     }
   );
 
@@ -49,11 +50,19 @@ describe('With Tag', () => {
 	'kind': 'course',
 	'tag_ids': ['farmers', 'odi']
       });
-
+    await editions_collection.insert(
+      {
+	'title': 'Farmers Rule',
+	'content': 'A really long description\n\nWith line breaks',
+	'state': 'published',
+	'slug': 'farmers-rule'
+      });
   });
 
   after(() => {
     tags_collection.remove({});
+    artefacts_collection.remove({});
+    editions_collection.remove({});
   });
 
 });

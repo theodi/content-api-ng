@@ -3,6 +3,7 @@ const content_types = require('../mongo_documents/content_types.js');
 const Tags = require('../mongo_documents/tags.js');
 const Tag_types = require('../mongo_documents/tag_types.js').tag_types;
 const Artefacts = require('../mongo_documents/artefacts.js');
+const Editions = require('../mongo_documents/editions.js');
 const singular = require('pluralize').singular;
 const stream_from = require('rillet').from;
 const result_set = require('../json_format/result_set.js');
@@ -30,7 +31,7 @@ function type_param(req, res, db, url_helper) {
   const description = `All content with the ${type} type`;
   const artefacts = Artefacts.by_type(db, type, req.query["role"], req.query["sort"]);
 
-  send_artefacts(res, artefacts, description, url_helper);
+  send_artefacts(res, artefacts, description, db, url_helper);
 } // type_param
 
 async function handle_params(req, res, db, url_helper) {
@@ -53,14 +54,15 @@ async function handle_params(req, res, db, url_helper) {
   const description = `All content with the ${tag_ids} ${tags[0].tag_type}`;
   const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"], req.query["sort"], tag_extra_params(req));
 
-  send_artefacts(res, artefacts, description, url_helper);
+  send_artefacts(res, artefacts, description, db, url_helper);
 } // handle_params
 
-function send_artefacts(res, artefacts, description, url_helper) {
+function send_artefacts(res, artefacts, description, db, url_helper) {
   if (!artefacts)
     return error_404(res);
 
   artefacts.
+    then(as => Editions.map_onto(db, as)).
     then(as => as.map(a => format_artefact(a, url_helper))).
     then(as => res.json(result_set(as, description)));
 } // artefacts
