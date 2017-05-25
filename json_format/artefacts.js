@@ -38,18 +38,9 @@ function format(artefact, url_helper) {
   // populate the details
   pretty.details = {}
 
-  stream_of(BASE_FIELDS).flatten().
-    filter(f => artefact[f] !== undefined).
-    map(f => [f, artefact[f]]).
-    map(fv => convertIfDate(...fv)).
-    forEach(([f, v]) => pretty.details[f] = v);
-
-  stream_of(OPTIONAL_FIELDS, ODI_FIELDS).flatten().
-    filter(f => artefact.edition[f] !== undefined).
-    map(f => [f, artefact.edition[f]]).
-    map(fv => convertIfGovspeak(...fv)).
-    map(fv => convertIfDate(...fv)).
-    forEach(([f, v]) => pretty.details[f] = v);
+  merge_fields(pretty, BASE_FIELDS, artefact);
+  merge_fields(pretty, OPTIONAL_FIELDS, artefact.edition);
+  merge_fields(pretty, ODI_FIELDS, artefact.edition);
 
   return pretty;
 } // format
@@ -68,6 +59,14 @@ function merge(object1, object2) {
     object1[k] = v;
   return object1;
 } // merge
+
+function merge_fields(pretty, field_names, source) {
+  stream_of(field_names).flatten().
+    filter(f => source[f] !== undefined).
+    map(f => [f, source[f]]).
+    map(fv => convertIfDate(...fv)).
+    forEach(([f, v]) => pretty.details[f] = v);
+} // merge_fields
 
 function convertIfGovspeak(f, v) {
   if (GOVSPEAK.indexOf(f) == -1)
