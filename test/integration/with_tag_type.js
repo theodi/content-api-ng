@@ -78,8 +78,8 @@ describe('With Tag, type param', () => {
 	'kind': 'course',
 	'tag_ids': [r, 'course']
       });
-    
-    await artefacts_collection.insert(test_artefacts);	  
+
+    await artefacts_collection.insert(test_artefacts);
   });
 
   after(() => {
@@ -87,15 +87,12 @@ describe('With Tag, type param', () => {
   });
 });
 
-function test_with_tag(label, query, test, header_to_check, header_value) {
+function test_with_tag(label, query, test) {
   it(label, done => {
-    let t = request.
-	get(`/with_tag.json${query}`).
-	expect('Content-Type', 'application/json; charset=utf-8');
-    if (header_to_check)
-      t = t.expect(header_to_check, header_value);
-
-    t.expect(200).
+    request.
+      get(`/with_tag.json${query}`).
+      expect('Content-Type', 'application/json; charset=utf-8').
+      expect(200).
       end((err, res) => {
 	if (!res.body)
 	  assert(false, 'No JSON found');
@@ -104,4 +101,3 @@ function test_with_tag(label, query, test, header_to_check, header_value) {
       });
   });
 }
-
