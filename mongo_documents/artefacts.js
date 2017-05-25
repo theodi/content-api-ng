@@ -1,5 +1,6 @@
 const Tags = require('./tags.js');
 const stream_from = require('rillet').from;
+const wrap_artefact = require('./artefact_class.js');
 
 function by_type(db, type, role = 'odi', sort = '<not-set>') {
   const query = {
@@ -37,10 +38,7 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}) {
 async function find(db, query, sort = '<not-set>') {
   query['state'] = 'live'; // we only want live objects
   const projection = (sort == 'date') ? { sort: {'created_at': -1} } : undefined;
-  const artefacts_collection = db.get('artefacts');
-  const results = artefacts_collection.find(query, projection);
-
-  const artefacts = await results;
+  const artefacts = await do_find(db, query, projection);
 
   const all_tag_ids =
 	stream_from(artefacts).
@@ -55,6 +53,17 @@ async function find(db, query, sort = '<not-set>') {
 
   return artefacts;
 } // find
+
+async function do_find(db, query, projection) {
+  const artefacts_collection = db.get('artefacts');
+  const artefacts = [];
+  await artefacts_collection.find(query, projection).
+    each((artefact, {close, pause, resume}) => {
+      artefacts.push(wrap_artefact(artefact));
+      resume();
+    });
+  return artefacts;
+} // do_find
 
 exports.by_type = by_type;
 exports.by_tags = by_tags;
