@@ -22,7 +22,7 @@ function basic_artefact_format(artefact, url_helper) {
     {
       'updated_at': updated_date(artefact),
       'created_at': created_date(artefact),
-      'tag_ids': artefact.scoped_tag_ids
+      'tag_ids': artefact.tag_ids
     }
   );
 } // basic_artefact_format
