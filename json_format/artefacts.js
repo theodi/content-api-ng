@@ -1,5 +1,7 @@
 const stream_of = require('rillet').of;
+const stream_from = require('rillet').from;
 const tag_format = require('./tags.js');
+const markdown = require('markdown').markdown;
 
 function edition_or_artefact(artefact, edition_field, artefact_field) {
   if (artefact.edition && artefact.edition[edition_field])
@@ -33,6 +35,20 @@ function format(artefact, url_helper) {
 
   pretty.tags = tag_format(artefact.tags, url_helper);
 
+  // populate the details
+  pretty.details = {}
+
+  stream_of(BASE_FIELDS).flatten().
+    filter(f => artefact[f]).
+    map(f => [f, artefact[f]]).
+    forEach(([f, v]) => pretty.details[f] = v);
+
+  stream_of(OPTIONAL_FIELDS, ODI_FIELDS).flatten().
+    filter(f => artefact.edition[f]).
+    map(f => [f, artefact.edition[f]]).
+    map(fv => convertIfGovspeak(...fv)).
+    forEach(([f, v]) => pretty.details[f] = v);
+
   return pretty;
 } // format
 
@@ -50,6 +66,13 @@ function merge(object1, object2) {
     object1[k] = v;
   return object1;
 } // merge
+
+function convertIfGovspeak(f, v) {
+  if (GOVSPEAK.indexOf(f) == -1)
+    return [f, v];
+
+  return [f, markdown.toHTML(v)];
+} // convertIfGovspeak
 
 function updated_date(artefact) {
   try {
@@ -81,3 +104,88 @@ function content_api_date(date) {
 function pad(n) {
   return (n < 10) ? `0${n}` : n;
 } // pad
+
+const BASE_FIELDS = [
+  'need_id',
+  'business_proposition',
+  'description',
+  'excerpt',
+  'language',
+  'need_extended_font'
+];
+
+const OPTIONAL_FIELDS = [
+  'additional_information',
+  'alternate_methods',
+  'alternative_title',
+  'body',
+  'change_description',
+  'introduction',
+  'link',
+  'more_information',
+  'organiser',
+  'place_type',
+  'reviewed_at',
+  'short_description',
+  'summary',
+  'video_summary',
+  'video_url'
+];
+
+const ODI_FIELDS = [
+  'honorific_prefix',
+  'honorific_suffix',
+  'role',
+  'description',
+  'affiliation',
+  'url',
+  'telephone',
+  'twitter',
+  'linkedin',
+  'github',
+  'email',
+  'length',
+  'outline',
+  'outcomes',
+  'audience',
+  'prerequisites',
+  'requirements',
+  'materials',
+  'subtitle',
+  'content',
+  'end_date',
+  'media_enquiries_name',
+  'media_enquiries_email',
+  'media_enquiries_telephone',
+  'location',
+  'salary',
+  'closing_date',
+  'joined_at',
+  'graduated',
+  'tagline',
+  'involvement',
+  'want_to_meet',
+  'case_study',
+  'date_published',
+  'course',
+  'date',
+  'price',
+  'trainers',
+  'start_date',
+  'booking_url',
+  'hashtag',
+  'level',
+  'region',
+  'end_date',
+  'beta',
+  'join_date',
+  'area',
+  'host'
+];
+
+const GOVSPEAK = [
+  'content',
+  'description',
+  'license_overview',
+  'body'
+];
