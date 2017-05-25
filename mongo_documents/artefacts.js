@@ -36,12 +36,10 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}) {
 
 async function find(db, query, sort = '<not-set>') {
   query['state'] = 'live'; // we only want live objects
+  const projection = (sort == 'date') ? { sort: {'created_at': -1} } : undefined;
 
   const artefacts_collection = db.get('artefacts');
-  const results = artefacts_collection.find(query);
-
-  if (sort == 'date')
-    results = results.sort({'created_at': -1});
+  const results = artefacts_collection.find(query, projection);
 
   const artefacts = await results;
 
