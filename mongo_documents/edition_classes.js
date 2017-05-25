@@ -35,7 +35,6 @@ module.exports = wrap_edition;
 class Edition {
   constructor(edition) {
     this.business_propostion = false;
-
     for (const [k,v] of Object.entries(edition))
       this[k] = v;
   } // constructor
