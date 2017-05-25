@@ -2,11 +2,13 @@ const result_set = require('./result_set.js');
 const error_404 = require('./error_404.js');
 const content_types = require('../mongo_documents/content_types.js');
 const Tags = require('../mongo_documents/tags.js');
+const Tag_types = require('../mongo_documents/tag_types.js').tag_types;
 const Artefacts = require('../mongo_documents/artefacts.js');
 const singular = require('pluralize').singular;
+const from = require('rillet').from;
 
 //////////////////////////////////////////////////////////////
-async function handle_tag_param(req, res, db, url_helper) {
+async function tag_param(req, res, db, url_helper) {
   const tag = req.query["tag"];
   const tags = await Tags.by_ids(tag, db);
 
@@ -20,25 +22,55 @@ async function handle_tag_param(req, res, db, url_helper) {
     res.redirect(url_helper.with_type_url(tag, modifiers));
   else
     error_404(res);
-} // handle_tag_param
+} // tag_param
+
+function type_param(req, res, db, url_helper) {
+  const type = singular(req.query["type"]);
+  const description = `All content with the ${type} type`;
+  const artefacts = Artefacts.by_type(db, type, req.query["role"], req.query["sort"]);
+
+  send_artefacts(res, artefacts, description);
+} // type_param
+
+async function handle_params(req, res, db, url_helper) {
+  const request_tags = from(Tag_types).
+	map(t => req.query[t.singular]).
+	filter(q => q).
+	join();
+
+  // nothing requested, so bail
+  if (request_tags == '')
+    return error_404(res);
+
+  // so are what we've been asked for real tags?
+  const tags = await Tags.by_ids(request_tags, db);
+  if (tags.length == 0) // nope!
+    return error_404(res);
+
+  const tag_ids = tags.map(t => t.tag_id).join(',');
+
+  const description = `All content with the ${tag_ids} ${tags[0].tag_type}`;
+  const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"], req.query["sort"], tag_extra_params(req));
+
+  send_artefacts(res, artefacts, description);
+} // handle_params
+
+function send_artefacts(res, artefacts, description) {
+  if (artefacts)
+    artefacts.
+      then(a => res.json(result_set(a, description)));
+  else
+    error_404(res);
+} // artefacts
 
 function with_tag_formatter(req, res, db, url_helper) {
   if (req.query["tag"])
-    return handle_tag_param(req, res, db, url_helper);
+    return tag_param(req, res, db, url_helper);
 
-  let description = '';
-  let artefacts = null;
-  if (req.query["type"]) {
-    const type = singular(req.query["type"]);
-    description = `All content with the ${type} type`;
-    artefacts = Artefacts.by_type(db, type, req.query["role"], req.query["sort"]);
-  }
+  if (req.query["type"])
+    return type_param(req, res, db, url_helper);
 
-  if (artefacts)
-    artefacts.
-    then(a => res.json(result_set(a, description)));
-  else
-    error_404(res);
+  return handle_params(req, res, db, url_helper);
 } // with_tags_formatter
 
 function make_with_tag_formatter(db, url_helper) {
@@ -47,7 +79,6 @@ function make_with_tag_formatter(db, url_helper) {
 } // make_with_tag_formatter
 
 module.exports = make_with_tag_formatter;
-
 
 ///////////////////////////
 ///////////////////////////
@@ -63,13 +94,27 @@ const modifiers = [
   'summary'
 ];
 
+const tag_extras = [
+  'author',
+  'node',
+  'organization_name'
+];
+
+function tag_extra_params(req) {
+  return grab_request_params(req, tag_extras);
+} // tag_extras
+
 function modifier_params(req) {
+  return grab_request_params(req, modifiers);
+} // modifiers
+
+function grab_request_params(req, names) {
   const m = {};
-  for (const p of modifiers)
+  for (const p of names)
     if (req.query[p])
       m[p] = req.query[p];
   return m;
-} // modifier_params
+} // grab_request_params
 
 function uniq_by_tag_type() {
   const seen = {};

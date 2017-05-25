@@ -56,3 +56,4 @@ async function with_counts(db) {
 } // tag_types
 
 exports.with_counts = with_counts;
+exports.tag_types = known_tag_types;
