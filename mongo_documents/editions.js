@@ -1,4 +1,16 @@
 const stream_from = require('rillet').from;
+const wrap_edition = require('./edition_classes.js');
+
+async function find(db, query) {
+  const editions = [];
+  const editions_collection = db.get('editions');
+  await editions_collection.find(query).
+	each((edition, {close, pause, resume}) => {
+	  editions.push(wrap_edition(edition));
+	  resume();
+	});
+  return editions;
+} // find
 
 async function for_artefacts(db, artefacts, state = 'published') {
   if (artefacts.length == 0)
@@ -9,9 +21,8 @@ async function for_artefacts(db, artefacts, state = 'published') {
     'slug': { '$in': slugs },
     'state': state
   };
+  const editions = await find(db, query);
 
-  const editions_collection = db.get('editions');
-  const editions = await editions_collection.find(query);
   const slug_edition = {};
   editions.forEach(e => slug_edition[e.slug] = e);
   return slug_edition;
