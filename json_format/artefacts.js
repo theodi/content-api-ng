@@ -56,7 +56,7 @@ function updated_date(artefact) {
     const ud = stream_of(artefact.updated_at, artefact.edition ? artefact.edition.updated_at : undefined).
   	filter(d => d).
  	max();
-    return ud ? ud.iso8601 : '';
+    return ud ? content_api_date(ud) : '';
   } catch(err) {
     return '';
   } // catch
@@ -64,5 +64,20 @@ function updated_date(artefact) {
 
 
 function created_date(artefact) {
-  return artefact.created_at ? artefact.created_at.iso8601 : '';
+  return artefact.created_at ? content_api_date(artefact.created_at) : '';
 } // created_date
+
+// if javascripts toISOString is ok, we can use that instead
+function content_api_date(date) {
+  return date.getUTCFullYear() +
+        '-' + pad(date.getUTCMonth() + 1) +
+        '-' + pad(date.getUTCDate()) +
+        'T' + pad(date.getUTCHours()) +
+        ':' + pad(date.getUTCMinutes()) +
+        ':' + pad(date.getUTCSeconds()) +
+        '+00:00';
+} // content_api_date
+
+function pad(n) {
+  return (n < 10) ? `0${n}` : n;
+} // pad
