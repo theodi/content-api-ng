@@ -1,4 +1,3 @@
-const result_set = require('./result_set.js');
 const error_404 = require('./error_404.js');
 const content_types = require('../mongo_documents/content_types.js');
 const Tags = require('../mongo_documents/tags.js');
@@ -6,7 +5,8 @@ const Tag_types = require('../mongo_documents/tag_types.js').tag_types;
 const Artefacts = require('../mongo_documents/artefacts.js');
 const singular = require('pluralize').singular;
 const stream_from = require('rillet').from;
-const format_artefact = require('./artefact_formatters');
+const result_set = require('../json_format/result_set.js');
+const format_artefact = require('../json_format/artefacts.js');
 
 //////////////////////////////////////////////////////////////
 async function tag_param(req, res, db, url_helper) {

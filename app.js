@@ -19,9 +19,9 @@ const url_helper = make_url_helper(app_env);
 const db = open_mongo(config.get('mongo'));
 
 //////////////////////
-const tag_types_json = require('./json_format/tag_types.js');
-const tags_json = require('./json_format/tags.js');
-const with_tag_json = require('./json_format/with_tag.js');
+const tag_types_json = require('./routes/tag_types.js');
+const tags_json = require('./routes/tags.js');
+const with_tag_json = require('./routes/with_tag.js');
 
 app.get('/', (req, res) => res.send('Hello World'));
 app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
