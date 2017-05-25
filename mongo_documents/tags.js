@@ -25,13 +25,14 @@ function by_ids(tag_ids, db) {
 } // by_ids
 
 function scoped(tag_id_array, db) {
-  // find tags matching the supplied ids, ignoring keywords
+  // find tags matching the supplied ids, including keywords, but excluding roles
   const query = {
     '$and': [
       { 'tag_id': { '$in': tag_id_array } },
-      { 'tag_type': { '$nin': ['keyword', 'role'] } }
+      { 'tag_type': { '$nin': ['role'] } }
     ]
   };
+
   return find_tags(query, db);
 } // scoped
 

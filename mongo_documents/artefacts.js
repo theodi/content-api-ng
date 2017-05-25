@@ -37,7 +37,6 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}) {
 async function find(db, query, sort = '<not-set>') {
   query['state'] = 'live'; // we only want live objects
   const projection = (sort == 'date') ? { sort: {'created_at': -1} } : undefined;
-
   const artefacts_collection = db.get('artefacts');
   const results = artefacts_collection.find(query, projection);
 
@@ -84,7 +83,7 @@ function populate_tags(artefact, all_tags) {
 } // populate_tags
 
 function uniq_tag_ids() {
-  const seen = {};
+  const seen = {'odi': true };  // content_api is not return odi tags, either role or keyword, can't work out why
   return (tagid) => {
     if (seen[tagid])
       return false;
