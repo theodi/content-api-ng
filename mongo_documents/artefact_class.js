@@ -16,5 +16,9 @@ class Artefact {
   set edition(edition) {
     this.edition_ = edition;
     this.edition_.artefact = this;
-  }
-} // class Artefact
+  } // set edition
+
+  get rendering_path() {
+    return (this.edition_.rendering_path) ? this.edition_.rendering_path : `/${this.slug}`;
+  } // rendering_path
+}// class Artefact

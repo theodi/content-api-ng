@@ -38,8 +38,6 @@ class Edition {
     for (const [k,v] of Object.entries(edition))
       this[k] = v;
   } // constructor
-
-  get rendering_path() { return `/${this.slug}`; }
 } // class Edition
 
 class ArticleEdition extends Edition {
@@ -83,10 +81,14 @@ class CourseInstanceEdition extends Edition {
   get whole_body() { return this.description; }
 
   get rendering_path() {
-    console.log("CourseInstanceEdition - verify rendering_path");
-    return `/courses/${this.course}/${this.date}`;
+    const date_string = this.date.getUTCFullYear() +
+          '-' + pad(this.date.getUTCMonth() + 1) +
+          '-' + pad(this.date.getUTCDate());
+    return `/courses/${this.course}/${date_string}`;
   }
 } // class CourseInstanceEdition
+
+function pad(n) { return (n < 10) ? `0${n}` : n; }
 
 class CreativeWorkEdition extends Edition {
   constructor(edition) {
