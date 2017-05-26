@@ -1,4 +1,5 @@
 const Tags = require('./tags.js');
+const Editions = require('./editions.js');
 const stream_from = require('rillet').from;
 const wrap_artefact = require('./artefact_class.js');
 
@@ -135,8 +136,11 @@ async function populate_related(db, artefacts) {
 } // populate_related
 
 async function fetch_all_related(db, all_related_ids) {
+  const related_artefacts = await by_ids(db, all_related_ids);
+  await Editions.map_onto(db, related_artefacts);
+
   const related = {};
-  for (const artefact of await by_ids(db, all_related_ids))
+  for (const artefact of related_artefacts)
     related[artefact._id.toString()] = artefact;
 
   return related;
