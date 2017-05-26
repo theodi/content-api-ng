@@ -70,6 +70,7 @@ function merge_fields(pretty, field_names, source) {
   stream_of(field_names).flatten().
     filter(f => source[f] !== undefined).
     map(f => [f, source[f]]).
+    map(fv => convertIfGovspeak(...fv)).
     map(fv => convertIfDate(...fv)).
     forEach(([f, v]) => pretty.details[f] = v);
 } // merge_fields
