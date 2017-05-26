@@ -30,6 +30,11 @@ function basic_artefact_format(artefact, url_helper) {
   );
 } // basic_artefact_format
 
+function related_artefact_format(related_artefact, url_helper) {
+  return basic_artefact_format(related_artefact, url_helper);
+} // related_artefact_format
+
+//////////////////////////////////
 function format(artefact, url_helper) {
   const pretty = basic_artefact_format(artefact, url_helper);
 
@@ -44,6 +49,10 @@ function format(artefact, url_helper) {
 
   pretty.related_external_links = stream_from(artefact.external_links).
     map(l => { return { 'title': l.title, 'url': l.url }; }).
+    toArray();
+  if (artefact.related_artefacts)
+    pretty.related = stream_from(artefact.related_artefacts).
+    map(r => related_artefact_format(r, url_helper)).
     toArray();
 
   return pretty;
