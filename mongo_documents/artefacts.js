@@ -24,11 +24,14 @@ function format_filter(filter = {}) {
   return query;
 } // format_filter
 
-function by_ids(db, ids, sort = '<not-set>', summary = true) {
-  const query = { '_id': {'$in': ids } };
+function by_ids_or_slugs(db, ids, slugs) {
+  const ids_query = { '_id': {'$in': ids } };
+  const slug_query = { 'slug': {'$in': slugs } };
 
-  return find(db, query, sort, summary);
-} // by_ids
+  const query = { '$or': [ ids_query, slug_query ] };
+
+  return find(db, query, '<not-set>', true);
+} // by_ids_or_slugs
 
 function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summary = false) {
   const tag_query = tags.split(',').concat([role]).map(t => { return {'tag_ids': t}; });
@@ -126,23 +129,33 @@ async function populate_related(db, artefacts) {
 	filter(a => a.related_artefact_ids).
 	map(a => a.related_artefact_ids).
 	flatten().
+	uniq().
 	toArray();
-  if (all_related_ids.length == 0)
+  const all_related_slugs =
+	stream_from(artefacts).
+	map(a => [a.author]).
+	flatten().
+	filter(a => a).
+	uniq().
+	toArray();
+
+  if ((all_related_ids.length == 0) && (all_related_slugs.length == 0))
     return;
 
-  const all_related = await fetch_all_related(db, all_related_ids);
+  const all_related = await fetch_all_related(db, all_related_ids, all_related_slugs);
   artefacts.forEach(a => populate_artefact_related(a, all_related));
   return artefacts;
 } // populate_related
 
-async function fetch_all_related(db, all_related_ids) {
-  const related_artefacts = await by_ids(db, all_related_ids);
+async function fetch_all_related(db, all_related_ids, all_related_slugs) {
+  const related_artefacts = await by_ids_or_slugs(db, all_related_ids, all_related_slugs);
   await Editions.map_onto(db, related_artefacts);
 
   const related = {};
-  for (const artefact of related_artefacts)
+  for (const artefact of related_artefacts) {
     related[artefact._id.toString()] = artefact;
-
+    related[artefact.slug] = artefact;
+  } // for ...
   return related;
 } // fetch_all_related
 
@@ -150,5 +163,11 @@ function populate_artefact_related(artefact, all_related) {
   const related = [];
   for (const related_id of artefact.related_artefact_ids)
     related.push(all_related[related_id.toString()]);
+
+  if (artefact.author) {
+    console.log("AUTHOR!");
+    artefact.author_edition = all_related[artefact.author].edition;
+  } // if ...
+
   artefact.related_artefacts = related;
 } // populate_related

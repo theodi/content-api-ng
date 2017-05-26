@@ -43,6 +43,20 @@ function related_artefact_format(related_artefact, url_helper) {
   return pretty;
 } // related_artefact_format
 
+function author_format(artefact, url_helper) {
+  const author = artefact.author_edition;
+  if (!author)
+    return {}
+
+  return {
+    'name': author.title,
+    'slug': author.slug,
+    'state': author.state,
+    'web_url': url_helper.artefact_web_url(author.artefact),
+    'tag_ids': author.artefact.tag_ids
+  }
+} // author_format
+
 //////////////////////////////////
 function format(artefact, url_helper) {
   const pretty = basic_artefact_format(artefact, url_helper);
@@ -63,6 +77,10 @@ function format(artefact, url_helper) {
     pretty.related = stream_from(artefact.related_artefacts).
     map(r => related_artefact_format(r, url_helper)).
     toArray();
+
+  pretty.details.author =
+    pretty.author =
+    author_format(artefact, url_helper);
 
   return pretty;
 } // format
