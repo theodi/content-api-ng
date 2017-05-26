@@ -31,7 +31,16 @@ function basic_artefact_format(artefact, url_helper) {
 } // basic_artefact_format
 
 function related_artefact_format(related_artefact, url_helper) {
-  return basic_artefact_format(related_artefact, url_helper);
+  const pretty = basic_artefact_format(related_artefact, url_helper);
+
+  if (related_artefact.type == "Event") {
+    pretty.extras = {};
+    merge_fields(pretty.extras,
+		 ['start_date', 'end_date', 'location'],
+		 related_artefact.edition);
+  } // if ...
+
+  return pretty;
 } // related_artefact_format
 
 //////////////////////////////////
@@ -43,9 +52,9 @@ function format(artefact, url_helper) {
   // populate the details
   pretty.details = {}
 
-  merge_fields(pretty, BASE_FIELDS, artefact);
-  merge_fields(pretty, OPTIONAL_FIELDS, artefact.edition);
-  merge_fields(pretty, ODI_FIELDS, artefact.edition);
+  merge_fields(pretty.details, BASE_FIELDS, artefact);
+  merge_fields(pretty.details, OPTIONAL_FIELDS, artefact.edition);
+  merge_fields(pretty.details, ODI_FIELDS, artefact.edition);
 
   pretty.related_external_links = stream_from(artefact.external_links).
     map(l => { return { 'title': l.title, 'url': l.url }; }).
@@ -73,7 +82,7 @@ function merge(object1, object2) {
   return object1;
 } // merge
 
-function merge_fields(pretty, field_names, source) {
+function merge_fields(destination, field_names, source) {
   if (!source)
     return;
   stream_of(field_names).flatten().
@@ -81,7 +90,7 @@ function merge_fields(pretty, field_names, source) {
     map(f => [f, source[f]]).
     map(fv => convertIfGovspeak(...fv)).
     map(fv => convertIfDate(...fv)).
-    forEach(([f, v]) => pretty.details[f] = v);
+    forEach(([f, v]) => destination[f] = v);
 } // merge_fields
 
 function convertIfGovspeak(f, v) {

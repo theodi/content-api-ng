@@ -11,6 +11,9 @@ class Artefact {
       this[k] = v;
   } // constructor
 
+  get type() {
+    return this.edition_ ? this.edition_._type.replace('Edition', '') : 'Unknown';
+  } // type
   get edition() { return this.edition_; }
 
   set edition(edition) {
