@@ -1,5 +1,5 @@
-const app = require('../../app');
-const request = require('supertest')(app);
+const expect = require('./request_tests.js');
+
 const assert = require('assert');
 const equal = assert.equal;
 const monk = require('monk');
@@ -35,22 +35,13 @@ describe('With Tag, tag param', () => {
 
 ////////////////////////////////////////
 function expect_404(label, query = '') {
-  it(`404 when ${label}`, done => {
-    request.
-      get(`/with_tag.json${query}`).
-      expect(404).
-      end(done);
-  });
+  expect._404(`404 when ${label}`, `/with_tag.json${query}`);
 } // expect_404
 
 function expect_redirect(label, query, location) {
-  it(`redirect ${label}`, done => {
-    request.
-      get(`/with_tag.json${query}`).
-      expect(302).
-      expect('Location', `http://example.org/with_tag.json${location}`).
-      end(done);
-  });
+  expect.redirect(`redirect ${label}`,
+		  `/with_tag.json${query}`,
+		  `http://example.org/with_tag.json${location}`);
 } // expect redirect
 
 ////////////////////////////////////////////
@@ -99,4 +90,3 @@ const test_tag_data = [
   }
 
 ];
-

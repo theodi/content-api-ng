@@ -1,5 +1,5 @@
-const app = require('../../app');
-const request = require('supertest')(app);
+const expect = require('./request_tests.js');
+
 const assert = require('assert');
 const equal = assert.equal;
 const monk = require('monk');
@@ -52,18 +52,9 @@ describe('Artefact', () => {
 
 //////////////////////////
 function expect_404(label, slug) {
-  expect_error(404, label, slug);
+  expect._404(`404 when ${label}`, `/${slug}.json`);
 } // expect_404
 
 function expect_410(label, slug) {
-  expect_error(410, label, slug);
+  expect._410(`410 when ${label}`, `/${slug}.json`);
 } // expect_410
-
-function expect_error(code, label, slug) {
-  it(`${code} when ${label}`, done => {
-    request.
-      get(`/${slug}.json`).
-      expect(code).
-      end(done);
-  });
-} // expect_error

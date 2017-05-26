@@ -1,3 +1,5 @@
+const expect = require('./request_tests.js');
+
 const app = require('../../app');
 const request = require('supertest')(app);
 const assert = require('assert');
@@ -67,16 +69,5 @@ describe('With Tag', () => {
 });
 
 function test_with_tag(label, query, test) {
-  it(label, done => {
-    request.
-      get(`/with_tag.json${query}`).
-      expect('Content-Type', 'application/json; charset=utf-8').
-      expect(200).
-      end((err, res) => {
-	if (!res.body)
-	  assert(false, 'No JSON found');
-	test(res.body);
-	done(err, res);
-      });
-  });
+  expect.ok(label, `/with_tag.json${query}`, test);
 }

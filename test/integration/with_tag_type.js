@@ -1,7 +1,6 @@
-const app = require('../../app');
-const request = require('supertest')(app);
-const assert = require('assert');
-const equal = assert.equal;
+const expect = require('./request_tests.js');
+
+const equal = require('assert').equal;
 const monk = require('monk');
 const mongo_config = require('config').get('mongo');
 
@@ -125,16 +124,5 @@ describe('With Tag, type param', () => {
 });
 
 function test_with_tag(label, query, test) {
-  it(label, done => {
-    request.
-      get(`/with_tag.json${query}`).
-      expect('Content-Type', 'application/json; charset=utf-8').
-      expect(200).
-      end((err, res) => {
-	if (!res.body)
-	  assert(false, 'No JSON found');
-	test(res.body);
-	done(err, res);
-      });
-  });
+  expect.ok(label, `/with_tag.json${query}`, test);
 }

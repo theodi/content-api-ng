@@ -1,5 +1,5 @@
-const app = require('../../app');
-const request = require('supertest')(app);
+const expect = require('./request_tests.js');
+
 const assert = require('assert');
 const equal = assert.equal;
 const monk = require('monk');
@@ -70,19 +70,5 @@ describe('Artefact external links', () => {
 
 //////////////////////////
 function test_artefact(label, artefact, test) {
-  it(label, done => {
-    request.
-      get(`/${artefact}.json`).
-      expect('Content-Type', 'application/json; charset=utf-8').
-      expect(200).
-      end((err, res) => {
-	if (err)
-	  done(err, res);
-
-        if (!res.body)
-          assert(false, 'No JSON found');
-        test(res.body);
-        done(err, res);
-      });
-  });
+  expect.ok(label, `/${artefact}.json`, test);
 }

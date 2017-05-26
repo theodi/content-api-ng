@@ -1,5 +1,5 @@
-const app = require('../../app');
-const request = require('supertest')(app);
+const expect = require('./request_tests.js');
+
 const assert = require('assert');
 const equal = assert.equal;
 const monk = require('monk');
@@ -9,7 +9,7 @@ const db = monk(`${mongo_config.hostname}:${mongo_config.port}/${mongo_config.da
 const tags_collection = db.get('tags');
 
 describe('Tag List', () => {
-  test_tags('list of tags', '/tags.json', body => {
+  expect.ok('list of tags', '/tags.json', body => {
     equal(body.description, 'All tags');
     equal(body.total, test_tag_data.length);
     equal(body.start_index, 1);
@@ -21,13 +21,13 @@ describe('Tag List', () => {
 
   // filter by type
   for (const [type, expected] of [['section', 3], ['person', 1], ['article', 0]])
-    test_tags(`filter by type=${type}`, `/tags.json?type=${type}`, body => {
+    expect.ok(`filter by type=${type}`, `/tags.json?type=${type}`, body => {
       equal(body.description, `${type} tags`);
       equal(body.results.length, expected);
       assert(body.results.every(r => r.details.type == type), `all tags should be have type=${type}`);
     });
 
-  test_tags('fully formatted', '/tags.json', body => {
+  expect.ok('fully formatted', '/tags.json', body => {
     const tag = body.results.find(t => t.content_with_tag.slug == 'crime');
     equal(tag.id, 'http://example.org/tags/sections/crime.json');
     equal(tag.web_url, null);
@@ -75,19 +75,3 @@ const test_tag_data = [
     'tag_id': 'membership'
   }
 ];
-
-//////////////////////////////
-function test_tags(label, url, test) {
-  it(label, done => {
-    request.
-      get(url).
-      expect('Content-Type', 'application/json; charset=utf-8').
-      expect(200).
-      end((err, res) => {
-	if (!res.body)
-	  assert(false, 'No JSON found');
-	test(res.body);
-	done();
-      });
-  });
-}
