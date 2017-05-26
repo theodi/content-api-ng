@@ -143,6 +143,7 @@ async function populate_related(db, artefacts) {
     return;
 
   const all_related = await fetch_all_related(db, all_related_ids, all_related_slugs);
+
   artefacts.forEach(a => populate_artefact_related(a, all_related));
   return artefacts;
 } // populate_related
@@ -161,13 +162,12 @@ async function fetch_all_related(db, all_related_ids, all_related_slugs) {
 
 function populate_artefact_related(artefact, all_related) {
   const related = [];
-  for (const related_id of artefact.related_artefact_ids)
-    related.push(all_related[related_id.toString()]);
+  if (artefact.related_artefacts_ids)
+    for (const related_id of artefact.related_artefact_ids)
+      related.push(all_related[related_id.toString()]);
 
-  if (artefact.author) {
-    console.log("AUTHOR!");
+  if (artefact.author && all_related[artefact.author])
     artefact.author_edition = all_related[artefact.author].edition;
-  } // if ...
 
   artefact.related_artefacts = related;
 } // populate_related
