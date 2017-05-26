@@ -61,6 +61,8 @@ function merge(object1, object2) {
 } // merge
 
 function merge_fields(pretty, field_names, source) {
+  if (!source)
+    return;
   stream_of(field_names).flatten().
     filter(f => source[f] !== undefined).
     map(f => [f, source[f]]).
