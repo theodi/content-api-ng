@@ -26,7 +26,8 @@ class Artefact {
     const whole_body = this.edition ? this.edition.whole_body : '';
     if (!whole_body)
       return '';
-    const first_line = whole_body.substr(0, whole_body.indexOf('\n'));
+    const first_line_md = whole_body.substr(0, whole_body.indexOf('\n'));
+    const first_line = first_line_md.replace(/[#_\\*]/g, ''); // strip markdown
     return first_line;
   } // excerpt
 
