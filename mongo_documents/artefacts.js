@@ -87,7 +87,8 @@ async function populate_tags(db, artefacts) {
 	stream_from(artefacts).
     	map(a => a.tag_ids).
 	flatten().
-	filter(uniq_tag_ids()).
+	filter(id => id != 'odi').  // content_api is not return odi tags, either role or keyword, can't work out why
+	uniq().
 	toArray();
 
   const all_tags = await fetch_all_tags(all_tag_ids, db);
@@ -116,15 +117,6 @@ function populate_artefact_tags(artefact, all_tags) {
   artefact.tag_ids = tag_ids;
   artefact.tags = tags;
 } // populate_tags
-
-function uniq_tag_ids() {
-  const seen = {'odi': true };  // content_api is not return odi tags, either role or keyword, can't work out why
-  return (tagid) => {
-    if (seen[tagid])
-      return false;
-    return seen[tagid] = true;
-  };
-} // uniq
 
 //////////////////////////////////////
 async function populate_related(db, artefacts) {

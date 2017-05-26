@@ -47,7 +47,8 @@ class Edition {
     let section = stream_from(this.artefact.tags).
 	map(t => url_map[t.tag_id]).
 	filter(t => t).
-	join(':');
+	uniq().
+	join();
     if (!section && url_map['default'])
       section = url_map['default'];
 
