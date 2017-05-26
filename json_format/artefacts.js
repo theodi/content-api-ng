@@ -42,6 +42,10 @@ function format(artefact, url_helper) {
   merge_fields(pretty, OPTIONAL_FIELDS, artefact.edition);
   merge_fields(pretty, ODI_FIELDS, artefact.edition);
 
+  pretty.related_external_links = stream_from(artefact.external_links).
+    map(l => { return { 'title': l.title, 'url': l.url }; }).
+    toArray();
+
   return pretty;
 } // format
 
