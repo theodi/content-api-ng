@@ -1,3 +1,5 @@
+const stream_from = require('rillet').from;
+
 function wrap_edition(edition) {
   switch (edition._type) {
   case 'ArticleEdition':
@@ -38,6 +40,26 @@ class Edition {
     for (const [k,v] of Object.entries(edition))
       this[k] = v;
   } // constructor
+
+
+  ////////////////////
+  tag_to_rendering_path(url_map) {
+    let section = stream_from(this.artefact.tags).
+	map(t => url_map[t.tag_id]).
+	filter(t => t).
+	join(':');
+    if (!section && url_map['default'])
+      section = url_map['default'];
+
+    return section ? `/${section}/${this.slug}` : `${this.slug}`;
+  } // tag_to_rendering_path
+  /*
+    def tag_to_rendering_path(url_map)
+      section = artefact.tags.map{|x| url_map[x.tag_id]}.compact.uniq.join
+      section = url_map[:default] if section.blank? && url_map[:default]
+      "#{'/' unless section.blank?}#{section}/#{slug}"
+    end
+  */
 } // class Edition
 
 class ArticleEdition extends Edition {
@@ -48,9 +70,13 @@ class ArticleEdition extends Edition {
   get whole_body() { return this.content; }
 
   get rendering_path() {
-    console.log("ArticleEdition work to do in rendering_path?");
-    return `/${this.slug}`;
-  }
+    return this.tag_to_rendering_path({
+      'news': 'news',
+      'blog': 'blog',
+      'guide': 'guides',
+      'media': 'media'
+    });
+  } // rendering_path
 } // ArticleEdition
 
 class CaseStudyEdition extends Edition {
@@ -85,7 +111,7 @@ class CourseInstanceEdition extends Edition {
           '-' + pad(this.date.getUTCMonth() + 1) +
           '-' + pad(this.date.getUTCDate());
     return `/courses/${this.course}/${date_string}`;
-  }
+  } // rendering_path
 } // class CourseInstanceEdition
 
 function pad(n) { return (n < 10) ? `0${n}` : n; }
@@ -108,9 +134,21 @@ class EventEdition extends Edition {
   get whole_body() { return this.description; }
 
   get rendering_path() {
-    console.log("EventEdition work to do in rendering_path?");
-    return `/${this.slug}`;
-  }
+    return this.tag_to_rendering_path({
+      'event:lunchtime-lecture': 'lunchtime-lectures',
+      'event:meetup': 'meetups',
+      'event:research-afternoon': 'research-afternoons',
+      'event:open-data-challenge-series': 'challenge-series',
+      'event:roundtable': 'roundtables',
+      'event:workshop': 'workshops',
+      'event:networking-event': 'networking-events',
+      'event:panel-discussion': 'panel-discussions',
+      'event:summit': 'summit',
+      'event:summit-session-2016': 'summit/2016/sessions',
+      'event:summit-training-day-session-2016': 'summit/2016/training-day/sessions',
+      'default': 'events'
+    });
+  } // rendering_path
 } // EventEdition
 
 class JobEdition extends Edition {
@@ -143,9 +181,11 @@ class OrganizationEdition extends Edition {
   get whole_body() { return this.description; }
 
   get rendering_path() {
-    console.log("OrganizationEdition work to do in rendering_path?");
-    return `/${this.slug}`;
-  }
+    return this.tag_to_rendering_path({
+      'start-up': 'start-ups',
+      'member': 'members'
+    });
+  } // rendering_path
 } // class OrganizationEdition
 
 class PersonEdition extends Edition {
@@ -156,9 +196,11 @@ class PersonEdition extends Edition {
   get whole_body() { return this.description; }
 
   get rendering_path() {
-    console.log("PersonEdition work to do in rendering_path?");
-    return `/${this.slug}`;
-  }
+    return this.tag_to_rendering_path({
+      'team': 'team',
+      'summit-speaker-2016': 'summit/2016/speakers'
+    });
+  } // render_path
 } // class PersonEdition
 
 class ReportEdition extends Edition {
@@ -166,7 +208,7 @@ class ReportEdition extends Edition {
     super(edition);
   } // constructor
 
-  get whole_body() { return ""; }
+  get whole_body() { return ''; }
 
   get rendering_path() { return `/reports/${this.slug}`; }
 } // class ReportEdition
@@ -179,15 +221,9 @@ class TimedItemEdition extends Edition {
   get whole_body() { return this.content; }
 
   get rendering_path() {
-    console.log("TimedItemEdition work to do in rendering_path?");
-    return `/${this.slug}`;
-  }
+    return this.tag_to_rendering_path({
+      'consultation-response': 'consultation-responses',
+      'procurement': 'procurement'
+    });
+  } // rendering_path
 } // class TimedItemEdition
-
-/*
-def tag_to_rendering_path(url_map)
-    section = artefact.tags.map{|x| url_map[x.tag_id]}.compact.uniq.join
-    section = url_map[:default] if section.blank? && url_map[:default]
-    "#{'/' unless section.blank?}#{section}/#{slug}"
-end
-*/
