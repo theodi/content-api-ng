@@ -18,6 +18,14 @@ class Artefact {
     this.edition_.artefact = this;
   } // set edition
 
+  get excerpt() {
+    const whole_body = this.edition.whole_body;
+    if (!whole_body)
+      return '';
+    const first_line = whole_body.substr(0, whole_body.indexOf('\n'));
+    return first_line;
+  } // excerpt
+
   get rendering_path() {
     return (this.edition_.rendering_path) ? this.edition_.rendering_path : `/${this.slug}`;
   } // rendering_path

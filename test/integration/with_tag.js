@@ -25,8 +25,6 @@ describe('With Tag', () => {
     }
   );
 
-
-
   //////////////////////////////////////
   before(async() => {
     await tags_collection.insert([
@@ -47,13 +45,14 @@ describe('With Tag', () => {
 	'description': 'A description of farmers',
 	'state': 'live',
 	'slug': 'farmers-rule',
-	'kind': 'course',
+	'kind': 'article',
 	'tag_ids': ['farmers', 'odi']
       });
     await editions_collection.insert(
       {
 	'title': 'Farmers Rule',
-	'content': 'A really long description\n\nWith line breaks',
+	'_type': 'ArticleEdition',
+	'content': 'A really long description of farmers\n\nWith line breaks',
 	'state': 'published',
 	'slug': 'farmers-rule'
       });
