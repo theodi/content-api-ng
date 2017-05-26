@@ -17,6 +17,9 @@ function format_tag(tag, url_helper) {
 } // format_tag
 
 function format(tag, url_helper) {
+  if (!tag)
+    return {};
+
   if (Array.isArray(tag))
     return tag.map(t => format_tag(t, url_helper));
   return format_tag(tag, url_helper);
