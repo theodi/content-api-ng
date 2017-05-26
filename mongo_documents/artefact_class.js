@@ -19,7 +19,7 @@ class Artefact {
   } // set edition
 
   get excerpt() {
-    const whole_body = this.edition.whole_body;
+    const whole_body = this.edition ? this.edition.whole_body : '';
     if (!whole_body)
       return '';
     const first_line = whole_body.substr(0, whole_body.indexOf('\n'));
@@ -27,6 +27,6 @@ class Artefact {
   } // excerpt
 
   get rendering_path() {
-    return (this.edition_.rendering_path) ? this.edition_.rendering_path : `/${this.slug}`;
+    return (this.edition_) ? this.edition_.rendering_path : `/${this.slug}`;
   } // rendering_path
 }// class Artefact
