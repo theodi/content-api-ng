@@ -23,10 +23,10 @@ function format_filter(filter = {}) {
   return query;
 } // format_filter
 
-function by_ids(db, ids) {
+function by_ids(db, ids, sort = '<not-set>', summary = true) {
   const query = { '_id': {'$in': ids } };
 
-  return find(db, query);
+  return find(db, query, sort, summary);
 } // by_ids
 
 function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summary = false) {
