@@ -15,7 +15,8 @@ class Artefact {
 
   set edition(edition) {
     this.edition_ = edition;
-    this.edition_.artefact = this;
+    if (edition)
+      this.edition_.artefact = this;
   } // set edition
 
   get excerpt() {

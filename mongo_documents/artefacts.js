@@ -47,7 +47,7 @@ async function by_slug(db, slug, role = 'odi') {
 } // by_slug
 
 async function find(db, query, sort = '<not-set>') {
-  const projection = (sort == 'date') ? { sort: {'created_at': -1} } : undefined;
+  const projection = (sort == 'date') ? { 'sort': {'created_at': -1} } : undefined;
   const artefacts = await do_find(db, query, projection);
 
   const all_tag_ids =

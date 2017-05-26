@@ -1,7 +1,7 @@
 const stream_from = require('rillet').from;
 const wrap_edition = require('./edition_classes.js');
 
-async function find(db, query) {
+async function find(db, query, projection) {
   const editions = [];
   const editions_collection = db.get('editions');
   await editions_collection.find(query).
@@ -11,6 +11,10 @@ async function find(db, query) {
 	});
   return editions;
 } // find
+async function findOne(db, query, projection) {
+  const editions = await find(db, query, projection);
+  return editions.length ? editions[0] : null;
+} // findOne
 
 async function for_artefacts(db, artefacts, state = 'published') {
   if (artefacts.length == 0)
@@ -28,6 +32,16 @@ async function for_artefacts(db, artefacts, state = 'published') {
   return slug_edition;
 } // for_artefacts
 
+async function for_artefact(db, artefact, version_number = null) {
+  if (version_number)
+    return findOne(db, { 'panopticon_id': artefact._id, 'version_number': version_number });
+
+  return await findOne(db, {'panopticon_id': artefact._id, 'state': 'published'});
+  if (!edition)
+    edition = await findOne(db, {'panopticon_id': artefact._id }, { 'sort': {'version_number': -1} });
+  return edition;
+} // for_artefact
+
 async function map_onto(db, artefacts) {
   const editions = await for_artefacts(db, artefacts);
 
@@ -41,4 +55,11 @@ async function map_onto(db, artefacts) {
   return results;
 } // map_onto
 
+async function attach_edition(db, artefact, version_number) {
+  const edition = await for_artefact(db, artefact, version_number);
+  artefact.edition = edition;
+  return edition;
+} // attach_edition
+
 exports.map_onto = map_onto;
+exports.for_artefact = attach_edition;
