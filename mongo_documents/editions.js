@@ -34,11 +34,11 @@ async function for_artefacts(db, artefacts, state = 'published') {
 
 async function for_artefact(db, artefact, version_number = null) {
   if (version_number)
-    return findOne(db, { 'panopticon_id': artefact._id, 'version_number': version_number });
+    return findOne(db, { 'slug': artefact.slug, 'version_number': version_number });
 
-  return await findOne(db, {'panopticon_id': artefact._id, 'state': 'published'});
+  return await findOne(db, {'slug': artefact.slug, 'state': 'published'});
   if (!edition)
-    edition = await findOne(db, {'panopticon_id': artefact._id }, { 'sort': {'version_number': -1} });
+    edition = await findOne(db, {'slug': artefact.slug }, { 'sort': {'version_number': -1} });
   return edition;
 } // for_artefact
 
