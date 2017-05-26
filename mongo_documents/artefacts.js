@@ -5,7 +5,8 @@ const wrap_artefact = require('./artefact_class.js');
 function by_type(db, type, role = 'odi', sort = '<not-set>') {
   const query = {
     'kind': type,
-    'tag_ids': role
+    'tag_ids': role,
+    'state': 'live'
   };
 
   return find(db, query, sort);
@@ -29,14 +30,23 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}) {
   const field_query = tag_query.concat(filter_query);
 
   const query = {
-    '$and': field_query
+    '$and': field_query,
+    'state': 'live'
   };
 
   return find(db, query, sort);
 } // by_tags
 
+async function by_slug(db, slug, role = 'odi') {
+  const query = {
+    'slug': slug
+  };
+
+  const results = await find(db, query);
+  return results.length ? results[0] : null;
+} // by_slug
+
 async function find(db, query, sort = '<not-set>') {
-  query['state'] = 'live'; // we only want live objects
   const projection = (sort == 'date') ? { sort: {'created_at': -1} } : undefined;
   const artefacts = await do_find(db, query, projection);
 
@@ -67,6 +77,7 @@ async function do_find(db, query, projection) {
 
 exports.by_type = by_type;
 exports.by_tags = by_tags;
+exports.by_slug = by_slug;
 
 ///////////////////////////
 async function fetch_all_tags(all_tag_ids, db) {
