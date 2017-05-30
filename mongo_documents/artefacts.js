@@ -47,7 +47,7 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summar
   return find(db, query, { sort: sort, summary: summary });
 } // by_tags
 
-async function by_slug(db, slug, role = 'odi', summary = false) {
+async function by_slug(db, slug, role = 'odi', { summary = false } = {}) {
   const query = {
     'slug': slug
   };
