@@ -64,9 +64,9 @@ function open_mongo(mongo_config) {
 } // open_mongo
 
 function find_mongo_url(mongo_config) {
-  if (process.env.MONGO_URI) {
-    console.log("Using MONGO_URI environment variable");
-    return process.env.MONGO_URI;
+  if (process.env.MONGODB_URI) {
+    console.log("Using MONGODB_URI environment variable");
+    return process.env.MONGODB_URI;
   } // find_mongo_url
 
   const hostname = mongo_config.hostname;
