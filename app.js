@@ -24,6 +24,7 @@ const tags_json = require('./routes/tags.js');
 const with_tag_json = require('./routes/with_tag.js');
 const latest_json = require('./routes/latest.js');
 const artefact_json = require('./routes/artefact.js');
+const search_json = require('./routes/search.js');
 
 app.get('/', (req, res) => res.send('Hello World'));
 app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
@@ -31,6 +32,7 @@ app.get('/tag_types.json', tag_types_json(db, url_helper));
 app.get('/tags.json', tags_json(db, url_helper));
 app.get('/with_tag.json', with_tag_json(db, url_helper));
 app.get('/latest.json', latest_json(db, url_helper));
+app.get('/search.json', search_json(db, url_helper));
 app.get('/:artefactSlug.json', artefact_json(db, url_helper));
 
 console.log("Available endpoints are " + app._router.stack.filter(r => r.route).map(r => r.route.path).join(', '));
