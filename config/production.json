@@ -1,8 +1,10 @@
 {
   "api": {
-    "hostname": "contentapi.theodi.org",
-    "port": "",
-    "prefix", "",
-    "secure", true
+    "hostname": "https://content-api-ng.herokuapp.com",
+    "prefix": "",
+    "secure": false
+  },
+  "frontend": {
+    "webroot": "http://theodi.org"
   }
 }
