@@ -2,10 +2,10 @@ const url = require('url');
 const http = require('http');
 const str_replace = require('str_replace');
 
-function search_json_formatter(req, res, db, url_helper) {
+function section_json_formatter(req, res, db, url_helper) {
   var options = {
     host: "contentapi-legacy.theodi.org",
-    path: "/search.json?" + (require('url').parse(req.url).query)
+    path: "/section.json?" + (require('url').parse(req.url).query)
   };
 
   callback = function(response) {
@@ -22,9 +22,9 @@ function search_json_formatter(req, res, db, url_helper) {
   http.request(options,callback).end();
 } 
 
-function search(db, url_helper) {
+function section(db, url_helper) {
   return (req, res) =>
-    search_json_formatter(req, res, db, url_helper);
+    section_json_formatter(req, res, db, url_helper);
 }
 
-module.exports = search;
+module.exports = section;
