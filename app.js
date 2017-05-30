@@ -54,11 +54,7 @@ app.use(function(err, req, res, next) {
 
 //////////////////////////////////////////////
 function open_mongo(mongo_config) {
-  const hostname = mongo_config.hostname;
-  const port = mongo_config.port;
-  const database = mongo_config.database;
-
-  const mongo_url = `${hostname}:${port}/${database}`;
+  const mongo_url = find_mongo_url(mongo_config);
   const db = monk(mongo_url);
 
   if (!test_mode)
@@ -66,5 +62,17 @@ function open_mongo(mongo_config) {
 
   return db;
 } // open_mongo
+
+function find_mongo_url(mongo_config) {
+  if (process.env.MONGO_URI) {
+    console.log("Using MONGO_URI environment variable");
+    return process.env.MONGO_URI;
+  } // find_mongo_url
+
+  const hostname = mongo_config.hostname;
+  const port = mongo_config.port;
+  const database = mongo_config.database;
+  return `${hostname}:${port}/${database}`;
+} // find_mongo_url
 
 module.exports = app;
