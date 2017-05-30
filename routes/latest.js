@@ -42,5 +42,7 @@ async function verify_tag_and_find_slug(db, tag, role) {
   if (possible_tags.length == 0)
     return;
 
-  const aretfact = await Artefacts.by_tags(tag, role, 'date')
+  const artefact = await Artefacts.by_tags(db, tag, role,
+					   { sort: 'date',
+					     limit: 1 })
 } // verify_tag_and_find_slug

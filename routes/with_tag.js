@@ -52,7 +52,9 @@ async function handle_params(req, res, db, url_helper) {
   const tag_ids = tags.map(t => t.tag_id).join(',');
 
   const description = `All content with the ${tag_ids} ${tags[0].tag_type}`;
-  const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"], req.query["sort"], tag_extra_params(req));
+  const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"],
+				      { sort: req.query["sort"],
+					filter: tag_extra_params(req) });
 
   send_artefacts(res, artefacts, description, db, url_helper);
 } // handle_params

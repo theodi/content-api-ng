@@ -33,7 +33,8 @@ function by_ids_or_slugs(db, ids, slugs) {
   return find(db, query, { sort: '<not-set>', summary: true });
 } // by_ids_or_slugs
 
-function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summary = false) {
+function by_tags(db, tags, role = 'odi',
+		 { sort = '<not-set>', filter = {}, summary = false } = {}) {
   const tag_query = tags.split(',').concat([role]).map(t => { return {'tag_ids': t}; });
   const filter_query = format_filter(filter);
 
