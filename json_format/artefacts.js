@@ -61,7 +61,7 @@ function external_links_format(artefact, url_helper) {
 
 function author_format(artefact, url_helper) {
   const author = artefact.author_artefact;
-  if (!author)
+  if (!author || !author.edition)
     return {}
 
   return {
