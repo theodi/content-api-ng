@@ -1,10 +1,6 @@
 {
-  "express": {
-    "port": 80
-  },
   "api": {
     "hostname": "https://content-api-ng.herokuapp.com",
-    "port": 80,
     "prefix": "",
     "secure": false
   },
