@@ -3,12 +3,10 @@ const single_artefact = require('./single_artefact.js');
 const Tags = require('../mongo_documents/tags.js');
 const Artefacts = require('../mongo_documents/artefacts.js');
 
-function latest_formatter(req, res, db, url_helper) {
-  const slug = find_and_verify_slug(db, req);
-
+async function latest_formatter(req, res, db, url_helper) {
+  const slug = await find_and_verify_slug(db, req);
   if (!slug)
     return error_404(res);
-
   single_artefact(slug, req, res, db, url_helper);
 } // latest_formatter
 
@@ -37,12 +35,11 @@ function verify_type_and_find_slug(db, type) {
 
 async function verify_tag_and_find_slug(db, tag, role) {
   const possible_tags = await Tags.by_ids(tag, db);
-
-  console.log(possible_tags);
   if (possible_tags.length == 0)
     return;
 
-  const artefact = await Artefacts.by_tags(db, tag, role,
-					   { sort: 'date',
-					     limit: 1 })
+  const artefacts = await Artefacts.by_tags(db, tag, role,
+		  			    { sort: 'date', limit: 1});
+  const artefact = artefacts[0];
+  return artefact.slug;
 } // verify_tag_and_find_slug

@@ -34,7 +34,7 @@ function by_ids_or_slugs(db, ids, slugs) {
 } // by_ids_or_slugs
 
 function by_tags(db, tags, role = 'odi',
-		 { sort = '<not-set>', filter = {}, summary = false } = {}) {
+		 { sort, filter = {}, summary = false, limit } = {}) {
   const tag_query = tags.split(',').concat([role]).map(t => { return {'tag_ids': t}; });
   const filter_query = format_filter(filter);
 
@@ -45,7 +45,7 @@ function by_tags(db, tags, role = 'odi',
     'state': 'live'
   };
 
-  return find(db, query, { sort: sort, summary: summary });
+  return find(db, query, { sort: sort, summary: summary, limit: limit });
 } // by_tags
 
 async function by_slug(db, slug, role = 'odi', { summary = false } = {}) {
@@ -57,8 +57,10 @@ async function by_slug(db, slug, role = 'odi', { summary = false } = {}) {
   return results.length ? results[0] : null;
 } // by_slug
 
-async function find(db, query, { sort = '<not-set>', summary = false }) {
+async function find(db, query, { sort, summary = false, limit }) {
   const projection = (sort == 'date') ? { 'sort': {'created_at': -1} } : undefined;
+  if (projection && limit)
+    projection.limit = limit;
   const artefacts = await do_find(db, query, projection);
 
   await populate_tags(db, artefacts);
