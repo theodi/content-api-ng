@@ -159,7 +159,7 @@ class JobEdition extends Edition {
 
   get whole_body() { return this.description; }
 
-  get rendering_path() { return `/jobs/${slug}`; }
+  get rendering_path() { return `/jobs/${this.slug}`; }
 } // class JobEdition
 
 class NodeEdition extends Edition {
@@ -169,7 +169,7 @@ class NodeEdition extends Edition {
 
   get whole_body() { return this.description; }
 
-  get rendering_path() { return `/nodes/${slug}`; }
+  get rendering_path() { return `/nodes/${this.slug}`; }
 
   get latlng() { return [location[0], location[1]].join(','); }
 } // class NodeEdition
