@@ -81,6 +81,9 @@ async function do_find(db, query, projection) {
       artefacts.push(wrap_artefact(artefact));
       resume();
     });
+
+  await Editions.map_onto(db, artefacts);
+
   return artefacts;
 } // do_find
 
@@ -136,7 +139,7 @@ async function populate_related(db, artefacts) {
 	toArray();
   const all_related_slugs =
 	stream_from(artefacts).
-	map(a => [a.author, a.organization_name]).
+	map(a => [a.author, a.organization_name, a.edition ? a.edition.artist : undefined]).
 	flatten().
 	filter(a => a).
 	uniq().
@@ -152,7 +155,6 @@ async function populate_related(db, artefacts) {
 
 async function fetch_all_related(db, all_related_ids, all_related_slugs) {
   const related_artefacts = await by_ids_or_slugs(db, all_related_ids, all_related_slugs);
-  await Editions.map_onto(db, related_artefacts);
 
   const related = {};
   for (const artefact of related_artefacts) {
@@ -176,6 +178,9 @@ function populate_artefact_related(artefact, all_related) {
     artefact.author_artefact = all_related[artefact.author];
 
   artefact.organizations = gather_related(all_related, artefact.organization_name);
+
+  if (artefact.edition && artefact.edition.artist && all_related[artefact.edition.artist])
+    artefact.artist = all_related[artefact.edition.artist];
 } // populate_related
 
 function gather_related(all_related, ids_or_slugs) {

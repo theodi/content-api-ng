@@ -65,7 +65,6 @@ function send_artefacts(res, artefacts, description, db, url_helper) {
     return error_404(res);
 
   artefacts.
-    then(as => Editions.map_onto(db, as)).
     then(as => as.map(a => format_artefact(a, url_helper))).
     then(as => res.json(result_set(as, description))).
     catch(err => {

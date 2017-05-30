@@ -10,6 +10,8 @@ function wrap_edition(edition) {
     return new CourseEdition(edition);
   case 'CourseInstanceEdition':
     return new CourseInstanceEdition(edition);
+  case 'CreativeWorkEdition':
+    return new CreativeWorkEdition(edition);
   case 'EventEdition':
     return new EventEdition(edition);
   case 'JobEdition':

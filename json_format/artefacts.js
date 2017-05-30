@@ -30,6 +30,16 @@ function basic_artefact_format(artefact, url_helper) {
   );
 } // basic_artefact_format
 
+function related_artefacts_format(artefact, url_helper) {
+  const related = artefact.related_artefacts;
+  if (!related)
+    return;
+
+  return stream_from(related).
+    map(r => related_artefact_format(r, url_helper)).
+    toArray();
+} // related_artefacts_format
+
 function related_artefact_format(related_artefact, url_helper) {
   const pretty = basic_artefact_format(related_artefact, url_helper);
 
@@ -42,6 +52,12 @@ function related_artefact_format(related_artefact, url_helper) {
 
   return pretty;
 } // related_artefact_format
+
+function external_links_format(artefact, url_helper) {
+  return stream_from(artefact.external_links).
+    map(l => { return { 'title': l.title, 'url': l.url }; }).
+    toArray();
+} // external_links_format
 
 function author_format(artefact, url_helper) {
   const author = artefact.author_artefact;
@@ -56,6 +72,19 @@ function author_format(artefact, url_helper) {
     'tag_ids': author.tag_ids
   }
 } // author_format
+
+function artist_format(artefact, url_helper) {
+  const artist = artefact.artist;
+  if (!artist)
+    return;
+
+  return {
+    "artist": {
+      "name": artist.name,
+      "slug": artist.slug
+    }
+  };
+} // artist_format
 
 function organization_format(artefact, url_helper) {
   const organizations = artefact.organizations;
@@ -84,20 +113,11 @@ function format(artefact, url_helper) {
   merge_fields(pretty.details, OPTIONAL_FIELDS, artefact.edition);
   merge_fields(pretty.details, ODI_FIELDS, artefact.edition);
 
-  pretty.related_external_links = stream_from(artefact.external_links).
-    map(l => { return { 'title': l.title, 'url': l.url }; }).
-    toArray();
-  if (artefact.related_artefacts)
-    pretty.related = stream_from(artefact.related_artefacts).
-    map(r => related_artefact_format(r, url_helper)).
-    toArray();
-
-  pretty.details.author =
-    pretty.author =
-    author_format(artefact, url_helper);
-  pretty.details.organizations =
-    pretty.organizations =
-    organization_format(artefact, url_helper);
+  pretty.related_external_links = external_links_format(artefact, url_helper);
+  pretty.related = related_artefacts_format(artefact, url_helper);
+  pretty.details.organizations = pretty.organizations = organization_format(artefact, url_helper);
+  pretty.details.author = pretty.author = author_format(artefact, url_helper);
+  pretty.details.artist = artist_format(artefact, url_helper);
 
   return pretty;
 } // format
