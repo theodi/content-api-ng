@@ -119,9 +119,11 @@ function convertIfGovspeak(f, v) {
 } // convertIfGovspeak
 
 function convertIfDate(f, v) {
-  if (!f.endsWith('date'))
+  if (!f.endsWith('date') || (typeof(v) == 'string') || (!v))
     return [f, v];
 
+
+  console.log(`${f} = ${v}, ${typeof(v)}`);
   return [f, content_api_date(v)];
 } // convertIfDate
 
