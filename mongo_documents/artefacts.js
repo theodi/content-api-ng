@@ -10,7 +10,7 @@ function by_type(db, type, role = 'odi', sort = '<not-set>', summary = false) {
     'state': 'live'
   };
 
-  return find(db, query, sort);
+  return find(db, query, { sort: sort });
 } // by_type
 
 function format_filter(filter = {}) {
@@ -30,7 +30,7 @@ function by_ids_or_slugs(db, ids, slugs) {
 
   const query = { '$or': [ ids_query, slug_query ] };
 
-  return find(db, query, '<not-set>', true);
+  return find(db, query, { sort: '<not-set>', summary: true });
 } // by_ids_or_slugs
 
 function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summary = false) {
@@ -44,7 +44,7 @@ function by_tags(db, tags, role = 'odi', sort = '<not-set>', filter = {}, summar
     'state': 'live'
   };
 
-  return find(db, query, sort);
+  return find(db, query, { sort: sort, summary: summary });
 } // by_tags
 
 async function by_slug(db, slug, role = 'odi', summary = false) {
@@ -52,11 +52,11 @@ async function by_slug(db, slug, role = 'odi', summary = false) {
     'slug': slug
   };
 
-  const results = await find(db, query);
+  const results = await find(db, query, { summary: summary });
   return results.length ? results[0] : null;
 } // by_slug
 
-async function find(db, query, sort = '<not-set>', summary = false) {
+async function find(db, query, { sort = '<not-set>', summary = false }) {
   const projection = (sort == 'date') ? { 'sort': {'created_at': -1} } : undefined;
   const artefacts = await do_find(db, query, projection);
 
