@@ -44,18 +44,32 @@ function related_artefact_format(related_artefact, url_helper) {
 } // related_artefact_format
 
 function author_format(artefact, url_helper) {
-  const author = artefact.author_edition;
+  const author = artefact.author_artefact;
   if (!author)
     return {}
 
   return {
-    'name': author.title,
+    'name': author.edition.title,
     'slug': author.slug,
-    'state': author.state,
-    'web_url': url_helper.artefact_web_url(author.artefact),
-    'tag_ids': author.artefact.tag_ids
+    'state': author.edition.state,
+    'web_url': url_helper.artefact_web_url(author),
+    'tag_ids': author.tag_ids
   }
 } // author_format
+
+function organization_format(artefact, url_helper) {
+  const organizations = artefact.organizations;
+  if (!organizations || organizations.length == 0)
+    return [];
+
+  return organizations.map(o => {
+    return {
+      'name': o.edition.title,
+      'slug': o.slug,
+      'url_helper': url_helper.artefact_web_url(o)
+    }
+  });
+} // organization_format
 
 //////////////////////////////////
 function format(artefact, url_helper) {
@@ -81,6 +95,9 @@ function format(artefact, url_helper) {
   pretty.details.author =
     pretty.author =
     author_format(artefact, url_helper);
+  pretty.details.organizations =
+    pretty.organizations =
+    organization_format(artefact, url_helper);
 
   return pretty;
 } // format

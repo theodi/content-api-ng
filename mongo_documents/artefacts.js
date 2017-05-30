@@ -136,7 +136,7 @@ async function populate_related(db, artefacts) {
 	toArray();
   const all_related_slugs =
 	stream_from(artefacts).
-	map(a => [a.author]).
+	map(a => [a.author, a.organization_name]).
 	flatten().
 	filter(a => a).
 	uniq().
@@ -170,8 +170,21 @@ function populate_artefact_related(artefact, all_related) {
       if (related_artefact)
 	related.push(related_artefact);
     } // for ...
-  artefact.related_artefacts = related;
+  artefact.related_artefacts = gather_related(all_related, artefact.related_artefact_ids);
 
   if (artefact.author && all_related[artefact.author])
-    artefact.author_edition = all_related[artefact.author].edition;
+    artefact.author_artefact = all_related[artefact.author];
+
+  artefact.organizations = gather_related(all_related, artefact.organization_name);
 } // populate_related
+
+function gather_related(all_related, ids_or_slugs) {
+  const related = [];
+  if (ids_or_slugs)
+    for (const related_id of ids_or_slugs) {
+      const related_artefact = all_related[related_id.toString()];
+      if (related_artefact)
+	related.push(related_artefact);
+    } // for ...
+  return related;
+} // gather_related
