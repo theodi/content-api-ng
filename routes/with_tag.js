@@ -29,7 +29,7 @@ async function tag_param(req, res, db, url_helper) {
 function type_param(req, res, db, url_helper) {
   const type = singular(req.query["type"]);
   const description = `All content with the ${type} type`;
-  const artefacts = Artefacts.by_type(db, type, req.query["role"], req.query["sort"]);
+  const artefacts = Artefacts.by_type(db, type, req.query["role"], { sort: req.query["sort"] });
 
   send_artefacts(res, artefacts, description, db, url_helper);
 } // type_param

@@ -3,14 +3,14 @@ const Editions = require('./editions.js');
 const stream_from = require('rillet').from;
 const wrap_artefact = require('./artefact_class.js');
 
-function by_type(db, type, role = 'odi', sort = '<not-set>', summary = false) {
+function by_type(db, type, role = 'odi', { sort = '<not-set>', summary = false } = {}) {
   const query = {
     'kind': type,
     'tag_ids': role,
     'state': 'live'
   };
 
-  return find(db, query, { sort: sort });
+  return find(db, query, { sort: sort, summary: summary });
 } // by_type
 
 function format_filter(filter = {}) {
