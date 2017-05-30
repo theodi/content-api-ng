@@ -1,4 +1,5 @@
 const error_404 = require('./error_404.js');
+const error_503 = require('./error_503.js');
 const content_types = require('../mongo_documents/content_types.js');
 const Tags = require('../mongo_documents/tags.js');
 const Tag_types = require('../mongo_documents/tag_types.js').tag_types;
@@ -66,7 +67,11 @@ function send_artefacts(res, artefacts, description, db, url_helper) {
   artefacts.
     then(as => Editions.map_onto(db, as)).
     then(as => as.map(a => format_artefact(a, url_helper))).
-    then(as => res.json(result_set(as, description)));
+    then(as => res.json(result_set(as, description))).
+    catch(err => {
+      console.log(err);
+      error_503(res);
+    });
 } // artefacts
 
 function with_tag_formatter(req, res, db, url_helper) {
