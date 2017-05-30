@@ -1,4 +1,5 @@
 const error_404 = require('./error_404.js');
+const error_503 = require('./error_503.js');
 const single_artefact = require('./single_artefact.js');
 const Content_types = require('../mongo_documents/content_types.js');
 const Tags = require('../mongo_documents/tags.js');
@@ -9,7 +10,11 @@ async function latest_formatter(req, res, db, url_helper) {
   const slug = await find_and_verify_slug(db, req);
   if (!slug)
     return error_404(res);
-  single_artefact(slug, req, res, db, url_helper);
+  single_artefact(slug, req, res, db, url_helper).
+    catch(err => {
+      console.log(err);
+      error_503(res);
+    });
 } // latest_formatter
 
 function make_latest_formatter(db, url_helper) {
