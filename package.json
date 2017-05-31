@@ -30,6 +30,7 @@
     "pluralize": "^5.0.0",
     "rillet": "^1.7.1",
     "showdown": "^1.6.0",
+    "simple-get": "^2.6.0",
     "str_replace": "^0.1.5"
   },
   "devDependencies": {

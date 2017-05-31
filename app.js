@@ -1,7 +1,9 @@
 const express = require('express');
 const make_url_helper = require('./lib/url_helper.js');
+const make_asset_api_client = require('./lib/asset_api.js');
 const config = require('config');
 const monk = require('monk');
+const asset_api = require('./lib/asset_api.js');
 
 const app = express();
 const app_env = app.get('env');
@@ -15,6 +17,7 @@ if (!test_mode) {
 } // if ...
 
 const url_helper = make_url_helper(app_env);
+const asset_api_client = make_asset_api_client(app_env);
 
 const db = open_mongo(config.get('mongo'));
 
