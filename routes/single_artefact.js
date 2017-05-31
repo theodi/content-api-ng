@@ -16,8 +16,6 @@ async function single_artefact_formatter(slug, req, res, db, url_helper) {
   if (edition_no_good(res, edition, version))
     return;
 
-  // attach assets here
-
   res.json(format_artefact(artefact, url_helper));
 } // artefact_formatter
 
