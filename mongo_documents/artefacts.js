@@ -35,13 +35,13 @@ function by_ids_or_slugs(db, ids, slugs) {
 
 function by_tags(db, tags, role = 'odi',
 		 { sort, filter = {}, summary = false, limit } = {}) {
-  const tag_query = tags.split(',').concat([role]).map(t => { return {'tag_ids': t}; });
+  const tag_query = tags.split(',').map(t => { return {'tag_ids': [t, role]}; });
   const filter_query = format_filter(filter);
 
   const field_query = tag_query.concat(filter_query);
 
   const query = {
-    '$and': field_query,
+    '$or': field_query,
     'state': 'live'
   };
 
