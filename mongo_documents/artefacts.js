@@ -44,8 +44,6 @@ function by_tags(db, tags, role = 'odi',
   ];
   query['state'] = 'live';
 
-  console.log(`query => ${JSON.stringify(query, null, ' ')}`);
-
   return find(db, query, { sort: sort, summary: summary, limit: limit });
 } // by_tags
 
