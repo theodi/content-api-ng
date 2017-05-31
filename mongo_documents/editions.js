@@ -34,7 +34,7 @@ async function for_artefacts(db, artefacts, state = 'published') {
 
 async function for_artefact(db, artefact, version_number = null) {
   if (version_number)
-    return findOne(db, { 'slug': artefact.slug, 'version_number': version_number });
+    return findOne(db, { 'slug': artefact.slug, 'version_number': Number(version_number) });
 
   return await findOne(db, {'slug': artefact.slug, 'state': 'published'});
   if (!edition)
