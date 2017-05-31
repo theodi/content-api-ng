@@ -180,7 +180,7 @@ function populate_artefact_related(artefact, all_related) {
   if (artefact.author && all_related[artefact.author])
     artefact.author_artefact = all_related[artefact.author];
 
-  artefact.organizations = gather_related(all_related, artefact.organization_name);
+  artefact.organizations = gather_related(all_related, artefact.organization_name).filter(o => o.edition);
 
   if (artefact.edition && artefact.edition.artist && all_related[artefact.edition.artist])
     artefact.artist = all_related[artefact.edition.artist];
