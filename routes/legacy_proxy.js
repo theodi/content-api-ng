@@ -1,4 +1,5 @@
 const httpGet = require('simple-get').concat;
+oO
 const url_parse = require('url').parse;
 const str_replace = require('str_replace');
 const error_503 = require('./error_503.js');
@@ -33,7 +34,6 @@ function legacy_proxy(req, res, endpoint) {
 } // legacy_proxy
 
 function make_legacy_proxy(endpoint) {
-  console.log("woo");
   return (req, res) =>
     legacy_proxy(req, res, endpoint);
 } // make_legacy_proxy
