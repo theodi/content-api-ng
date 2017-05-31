@@ -1,6 +1,7 @@
 const url = require('url'); 
 const http = require('http');
 const str_replace = require('str_replace');
+const error_503 = require('./error_503.js');
 
 function section_json_formatter(req, res, db, url_helper) {
   var options = {
@@ -16,10 +17,21 @@ function section_json_formatter(req, res, db, url_helper) {
     });
 
     response.on('end', function () {
-      res.json(JSON.parse(str));
+      try {
+      	res.json(JSON.parse(str));
+      } catch(err) {
+      	console.log(err);
+   		error_503(res);
+      }
     });
   }
-  http.request(options,callback).end();
+
+  try {
+  	http.request(options,callback).end();
+  } catch(err) {
+  	console.log(err);
+    error_503(res);
+  }
 } 
 
 function section(db, url_helper) {
