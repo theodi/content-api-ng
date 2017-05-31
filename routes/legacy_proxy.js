@@ -3,10 +3,9 @@ const url_parse = require('url').parse;
 const str_replace = require('str_replace');
 const error_503 = require('./error_503.js');
 
-function legacy_proxy(req, res, endpoint) {
+function legacy_proxy(req, res) {
   const host = 'contentapi-legacy.theodi.org';
-  const query = url_parse(req.url).query;
-  const path = `${endpoint}?${query}`;
+  const path = url_parse(req.url).path;
   const legacy_url = `http://${host}${path}`;
 
   console.log(`Proxying ${legacy_url}`);
@@ -32,9 +31,8 @@ function legacy_proxy(req, res, endpoint) {
   });
 } // legacy_proxy
 
-function make_legacy_proxy(endpoint) {
-  return (req, res) =>
-    legacy_proxy(req, res, endpoint);
+function make_legacy_proxy() {
+  return legacy_proxy;
 } // make_legacy_proxy
 
 module.exports = make_legacy_proxy

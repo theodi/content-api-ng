@@ -34,18 +34,22 @@ const legacy_proxy = require('./routes/legacy_proxy.js');
 
 app.get('/', (req, res) => res.send('Hello World'));
 app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
-app.get('/tag_types.json', tag_types_json(db, url_helper));
-app.get('/tags.json', tags_json(db, url_helper));
-app.get('/with_tag.json', with_tag_json(db, url_helper));
-app.get('/latest.json', latest_json(db, url_helper));
 
 app.get('/search.json', legacy_proxy('/search.json'));
-app.get('/section.json', legacy_proxy('/section.json'));
-
+app.get('/tags.json', tags_json(db, url_helper));
+app.get('/tag_types.json', tag_types_json(db, url_helper));
+app.get('/tags/:tag_type_or_id.json', legacy_proxy());
+app.get('/tags/:tag_type/:tag_id.json', legacy_proxy());
+app.get('/with_tag.json', with_tag_json(db, url_helper));
+app.get('/latest.json', latest_json(db, url_helper));
+app.get('/upcoming.json', legacy_proxy());
+app.get('/course-instance.json', legacy_proxy());
+app.get('/lecture-list.json', legacy_proxy());
+app.get('/section.json', legacy_proxy());
+app.get('/related.json', legacy_proxy());
+app.get('/artefacts.json', legacy_proxy());
 app.get('/:artefactSlug.json', artefact_json(db, url_helper));
 app.get('/:artefactSlug/image', artefact_image(db));
-
-
 
 console.log("Available endpoints are " + app._router.stack.filter(r => r.route).map(r => r.route.path).join(', '));
 
