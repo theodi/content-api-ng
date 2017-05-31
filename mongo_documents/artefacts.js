@@ -220,10 +220,10 @@ async function populate_assets(db, artefacts) {
 async function fetch_all_assets(asset_api_client, asset_ids) {
   const assets = {};
 
-  for (const id of asset_ids) {
-    const asset = await asset_api_client.get(id);
-    assets[id] = asset;
-  } // for ...
+  const fetched_assets = await asset_api_client.get(asset_ids);
+  for (const asset of fetched_assets)
+    if (asset)
+      assets[asset.id] = asset;
 
   return assets;
 } // fetch_all_assets
