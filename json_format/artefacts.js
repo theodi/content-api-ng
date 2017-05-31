@@ -92,6 +92,22 @@ function organization_format(artefact, url_helper) {
   });
 } // organization_format
 
+function asset_format(asset) {
+  return {
+    "web_url": asset["file_url"],
+    "versions": asset["file_versions"],
+    "content_type": asset["content_type"],
+    "title": asset["title"],
+    "source": asset["source"],
+    "description": asset["description"],
+    "creator": asset["creator"],
+    "attribution": asset["attribution"],
+    "subject": asset["subject"],
+    "license": asset["license"],
+    "spatial": asset["spatial"]
+   };
+} // asset_format
+
 //////////////////////////////////
 function format(artefact, url_helper) {
   const pretty = basic_artefact_format(artefact, url_helper);
@@ -110,6 +126,10 @@ function format(artefact, url_helper) {
   pretty.details.organizations = pretty.organizations = organization_format(artefact, url_helper);
   pretty.details.author = pretty.author = author_format(artefact, url_helper);
   pretty.details.artist = artist_format(artefact, url_helper);
+
+  if (artefact.asset_ids)
+    for (const {field} of artefact.asset_ids)
+      pretty.details[field] = asset_format(artefact.assets[field]);
 
   return pretty;
 } // format
