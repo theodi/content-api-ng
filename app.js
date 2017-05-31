@@ -20,6 +20,8 @@ const url_helper = make_url_helper(app_env);
 const asset_api_client = make_asset_api_client(app_env);
 
 const db = open_mongo(config.get('mongo'));
+if (!test_mode)
+  db.asset_api_client = asset_api_client;
 
 //////////////////////
 const tag_types_json = require('./routes/tag_types.js');

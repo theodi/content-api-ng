@@ -69,6 +69,7 @@ async function find(db, query, { sort, summary = false, limit }) {
     return artefacts;
 
   await populate_related(db, artefacts);
+  await populate_assets(db, artefacts);
 
   return artefacts;
 } // find
@@ -193,3 +194,49 @@ function gather_related(all_related, ids_or_slugs) {
     } // for ...
   return related;
 } // gather_related
+
+/////////////////////////////////////////////////
+async function populate_assets(db, artefacts) {
+  if (!db.asset_api_client)
+    return;
+
+  const all_asset_ids =
+	stream_from(artefacts).
+	map(a => a.asset_ids).
+	flatten().
+	map(a => a.id).
+	filter(a => a).
+	uniq().
+	toArray();
+
+  if (all_asset_ids.length == 0)
+    return;
+
+  const all_assets = await fetch_all_assets(db.asset_api_client, all_asset_ids);
+  artefacts.forEach(a => populate_artefact_assets(a, all_assets));
+  return artefacts;
+} // populate_assets
+
+async function fetch_all_assets(asset_api_client, asset_ids) {
+  const assets = {};
+
+  for (const id of asset_ids) {
+    const asset = await asset_api_client.get(id);
+    assets[id] = asset;
+  } // for ...
+
+  return assets;
+} // fetch_all_assets
+
+function populate_artefact_assets(artefact, all_assets) {
+  if (!artefact.asset_ids)
+    return;
+
+  const assets = { }
+  for (const {field, id} of artefact.asset_ids) {
+    const asset = all_assets[id];
+    assets[field] = asset;
+  } // for ...
+
+  artefact.assets = assets;
+} // populate_artefact_assets
