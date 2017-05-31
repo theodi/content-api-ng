@@ -14,12 +14,12 @@ function by_type(db, type, role = 'odi', { sort, summary = false, limit } = {}) 
 } // by_type
 
 function format_filter(filter = {}) {
-  const query = [];
+  const query = {};
 
   for (const [k,v] of Object.entries(filter)) {
     const f = (v != "all") ? v : { "$nin" : ['', null] };
-    query.push({k, v});
-  }
+    query[k] = f;
+  } // for ...
 
   return query;
 } // format_filter
@@ -35,15 +35,16 @@ function by_ids_or_slugs(db, ids, slugs) {
 
 function by_tags(db, tags, role = 'odi',
 		 { sort, filter = {}, summary = false, limit } = {}) {
-  const tag_query = tags.split(',').map(t => { return {'tag_ids': [t, role]}; });
-  const filter_query = format_filter(filter);
+  const tag_query = tags.split(',').map(t => { return {'tag_ids': t}; });
 
-  const field_query = tag_query.concat(filter_query);
+  const query = format_filter(filter);
+  query['$and'] = [
+    {'$or': tag_query },
+    { 'tag_ids': role },
+  ];
+  query['state'] = 'live';
 
-  const query = {
-    '$or': field_query,
-    'state': 'live'
-  };
+  console.log(`query => ${JSON.stringify(query, null, ' ')}`);
 
   return find(db, query, { sort: sort, summary: summary, limit: limit });
 } // by_tags
