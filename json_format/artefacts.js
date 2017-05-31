@@ -145,8 +145,22 @@ function merge_fields(destination, field_names, source) {
     map(f => [f, source[f]]).
     map(fv => convertIfGovspeak(...fv)).
     map(fv => convertIfDate(...fv)).
+    map(fv => attachmentToImage(...fv)).
     forEach(([f, v]) => destination[f] = v);
 } // merge_fields
+
+function attachmentToImage(f,v) {
+  return[f, attachmentImage(v)];
+}
+
+function attachmentImage(v) {
+  const str_replace = require('str_replace');
+  var pattern = /attachment\[([^,;]*),([^,;]*),([^,;]*),([^\]]*)]/gm;
+  while (match = pattern.exec(v)) {
+    v = str_replace(match[0].trim(),'<img src="'+match[2].trim()+'" alt="'+match[3].trim()+'" class="'+match[4].trim()+'" id="'+match[1].trim()+'">',v);
+  }
+  return v;
+}
 
 function convertIfGovspeak(f, v) {
   if (GOVSPEAK.indexOf(f) == -1)
