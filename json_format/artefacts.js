@@ -169,7 +169,15 @@ function attachmentImage(v) {
   const str_replace = require('str_replace');
   var pattern = /attachment\[([^,;]*),([^,;]*),([^,;]*),([^\]]*)]/gm;
   while (match = pattern.exec(v)) {
+    match[2] = str_replace('<em>','_',match[2]);
+    match[2] = str_replace('</em>','_',match[2]);
     v = str_replace(match[0].trim(),'<img src="'+match[2].trim()+'" alt="'+match[3].trim()+'" class="'+match[4].trim()+'" id="'+match[1].trim()+'">',v);
+  }
+  var pattern = /attachment\[([^,;]*),([^,;]*),([^,;]*)]/gm;
+  while (match = pattern.exec(v)) {
+      match[2] = str_replace('<em>','_',match[2]);
+      match[2] = str_replace('</em>','_',match[2]);
+      v = str_replace(match[0].trim(),'<img src="'+match[2].trim()+'" alt="'+match[3].trim()+'" id="'+match[1].trim()+'">',v);
   }
   return v;
 }
