@@ -109,8 +109,11 @@ async function populate_tags(db, artefacts) {
 
 async function fetch_all_tags(all_tag_ids, db) {
   const tags = {};
-  for (const tag of await Tags.scoped(all_tag_ids, db))
+  for (const tag of await Tags.scoped(all_tag_ids, db)) {
+    if (tags[tag.tag_id])
+      continue;
     tags[tag.tag_id] = tag;
+  } // for ...
   return tags;
 } // all_tags
 
