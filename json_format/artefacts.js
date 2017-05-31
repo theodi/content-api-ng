@@ -9,25 +9,17 @@ function edition_or_artefact(artefact, edition_field, artefact_field) {
   return artefact[artefact_field];
 } // edition_field
 
-function minimal_artefact_format(artefact, url_helper) {
+function basic_artefact_format(artefact, url_helper) {
   return {
     'id': url_helper.artefact_url(artefact),
     'web_url': url_helper.artefact_web_url(artefact),
     'slug': artefact.slug,
     'title': edition_or_artefact(artefact, 'title', 'name'),
-    'format': underscorify(edition_or_artefact(artefact, 'format', 'kind'))
+    'format': underscorify(edition_or_artefact(artefact, 'format', 'kind')),
+    'updated_at': updated_date(artefact),
+    'created_at': created_date(artefact),
+    'tag_ids': artefact.tag_ids
   };
-} // minimal_artefact_format
-
-function basic_artefact_format(artefact, url_helper) {
-  return merge(
-    minimal_artefact_format(artefact, url_helper),
-    {
-      'updated_at': updated_date(artefact),
-      'created_at': created_date(artefact),
-      'tag_ids': artefact.tag_ids
-    }
-  );
 } // basic_artefact_format
 
 function related_artefacts_format(artefact, url_helper) {
