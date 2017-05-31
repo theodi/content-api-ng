@@ -1,7 +1,7 @@
 const stream_of = require('rillet').of;
 const stream_from = require('rillet').from;
 const tag_format = require('./tags.js');
-const markdown = require('markdown').markdown;
+const showdown = require('showdown');
 
 function edition_or_artefact(artefact, edition_field, artefact_field) {
   if (artefact.edition && artefact.edition[edition_field])
@@ -165,8 +165,8 @@ function attachmentImage(v) {
 function convertIfGovspeak(f, v) {
   if (GOVSPEAK.indexOf(f) == -1)
     return [f, v];
-
-  return [f, markdown.toHTML(v)];
+  converter = new showdown.Converter();
+  return [f, converter.makeHtml(v)];
 } // convertIfGovspeak
 
 function convertIfDate(f, v) {
