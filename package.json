@@ -25,11 +25,11 @@
   "dependencies": {
     "config": "^1.26.1",
     "express": "^4.15.3",
-    "markdown": "^0.5.0",
     "monk": "^5.0.2",
     "morgan": "^1.8.1",
     "pluralize": "^5.0.0",
     "rillet": "^1.7.1",
+    "showdown": "^1.6.0",
     "str_replace": "^0.1.5"
   },
   "devDependencies": {
