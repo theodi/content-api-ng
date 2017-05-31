@@ -1,6 +1,7 @@
 {
   "api": {
     "hostname": "content-api-ng.herokuapp.com",
+    "port": "",
     "prefix": "",
     "secure": true
   },
