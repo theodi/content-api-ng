@@ -32,6 +32,13 @@ const artefact_json = require('./routes/artefact.js');
 const artefact_image = require('./routes/image.js');
 const legacy_proxy = require('./routes/legacy_proxy.js');
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.get('/', (req, res) => res.send('Hello World'));
 app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
 
@@ -55,7 +62,7 @@ console.log("Available endpoints are " + app._router.stack.filter(r => r.route).
 
 ////////////////////////////////////////////
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
