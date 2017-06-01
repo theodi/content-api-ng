@@ -24,12 +24,12 @@ describe('With Tag, tag param', () => {
   expect_redirect('when filtering by multiple tags', '?tag=crime,business', '?section=crime%2Cbusiness');
 
   /////////////////////////////////////////
-  before(() => {
-    tags_collection.insert(test_tag_data);
+  before(async() => {
+    await tags_collection.insert(test_tag_data);
   });
 
-  after(() => {
-    tags_collection.remove({});
+  after(async() => {
+    await tags_collection.remove({});
   });
 });
 

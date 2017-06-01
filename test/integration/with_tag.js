@@ -60,10 +60,10 @@ describe('With Tag', () => {
       });
   });
 
-  after(() => {
-    tags_collection.remove({});
-    artefacts_collection.remove({});
-    editions_collection.remove({});
+  after(async() => {
+    await tags_collection.remove({});
+    await artefacts_collection.remove({});
+    await editions_collection.remove({});
   });
 
 });
