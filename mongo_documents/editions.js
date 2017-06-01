@@ -5,7 +5,7 @@ async function find(db, query, projection) {
   const editions = [];
   const editions_collection = db.get('editions');
   await editions_collection.find(query).
-	each((edition, {close, pause, resume}) => {
+        each((edition, {close, pause, resume}) => {
 	  editions.push(wrap_edition(edition));
 	  resume();
 	});
@@ -61,5 +61,6 @@ async function attach_edition(db, artefact, version_number) {
   return edition;
 } // attach_edition
 
+exports.find = find;
 exports.map_onto = map_onto;
 exports.for_artefact = attach_edition;
