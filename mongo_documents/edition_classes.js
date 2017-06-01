@@ -65,6 +65,8 @@ class Edition {
   } // asset_fields
 
   get asset_fields() { return []; }
+
+  get event_type() { return undefined; }
 } // class Edition
 
 class ArticleEdition extends Edition {
@@ -156,6 +158,13 @@ class EventEdition extends Edition {
       'default': 'events'
     });
   } // rendering_path
+
+  get event_type() {
+    return stream_from(this.artefact.tags).
+      filter(t => t.tag_type == 'event').
+      map(t => t.tag_id).
+      firstOrDefault();
+  } // event_type
 } // EventEdition
 
 class JobEdition extends Edition {

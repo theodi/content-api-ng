@@ -302,7 +302,8 @@ const ODI_FIELDS = [
   'beta',
   'join_date',
   'area',
-  'host'
+  'host',
+  'event_type'
 ];
 
 const GOVSPEAK = [
