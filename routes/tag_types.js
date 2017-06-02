@@ -1,20 +1,5 @@
 const tag_types = require('../mongo_documents/tag_types.js');
-const result_set = require('../json_format/result_set.js');
-const format = require('../json_format/tag_types.js');
 const error_503 = require('./error_503.js');
-
-/*
-  get "/tag_types.json" do
-
-    presenter = ResultSetPresenter.new(
-      FakePaginatedResultSet.new(known_tag_types),
-      url_helper,
-      TagTypePresenter,
-      description: "All tag types"
-    )
-    presenter.present.to_json
-  end
-*/
 
 function tag_types_formatter(req, res, db, url_helper) {
   tag_types.with_counts(db).
