@@ -16,7 +16,7 @@ describe('With Tag, tag param', () => {
   expect_404('multiple tag instances found', '?tag=ambiguity');
 
   expect_redirect('to typed url', '?tag=trout', '?article=trout');
-  expect_redirect('to typed url', '?tag=farmers', '?section=farmers&keyword=farmers');
+  expect_redirect('to typed url', '?tag=farmers', '?section=farmers');
   expect_redirect('to typed url with sort', '?tag=trout&sort=date', '?article=trout&sort=date');
   expect_redirect('to typed url with order by', '?tag=trout&order_by=date', '?article=trout&order_by=date');
   expect_redirect('to typed url with author', '?tag=trout&author=jez', '?article=trout&author=jez');

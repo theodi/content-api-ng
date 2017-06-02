@@ -13,10 +13,10 @@ const format_artefact = require('../json_format/artefacts.js');
 //////////////////////////////////////////////////////////////
 async function tag_param(req, res, db, url_helper) {
   const tag = req.query["tag"];
-  const tags = await Tags.by_ids(tag, db);
+  const tags = (await Tags.by_ids(tag, db)).filter(t => t.tag_type != 'keyword');
 
   const modifiers = modifier_params(req);
-  const possible_tags = tags.filter(uniq_by_tag_type()).filter(t => t.tag_type != 'keyword');
+  const possible_tags = tags.filter(uniq_by_tag_type());
 
   // If we can unambiguously determine the tag type, redirect to its correct URL
   if (possible_tags.length == 1)
@@ -57,7 +57,7 @@ async function handle_params(req, res, db, url_helper) {
   if (tags.length == 0) // nope!
     return error_404(res);
 
-  const tag_ids = tags.map(t => t.tag_id).join(',');
+  const tag_ids = stream_from(tags).map(t => t.tag_id).uniq().join(',');
 
   const sort_order = req.query['sort'] ? req.query['sort'] : 'slug';
 
