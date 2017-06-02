@@ -29,8 +29,8 @@
     "monk": "^5.0.2",
     "morgan": "^1.8.1",
     "pluralize": "^5.0.0",
-    "remarkable": "^1.7.1",
     "rillet": "^1.7.1",
+    "showdown": "^1.7.1",
     "simple-get": "^2.6.0",
     "str_replace": "^0.1.5"
   },
