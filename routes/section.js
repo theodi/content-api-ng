@@ -1,7 +1,6 @@
 const error_404 = require('./error_404.js');
 const error_503 = require('./error_503.js');
 const Sections = require('../mongo_documents/sections.js');
-const format_section = require('../json_format/section.js');
 
 async function section_formatter(req, res, db, url_helper) {
   const section_id = req.query['id'];
