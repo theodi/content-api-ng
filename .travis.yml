@@ -5,5 +5,3 @@ node_js:
 services: 
   - mongodb
 
-before_script:
-  - mongo govuk_content_shared_test
