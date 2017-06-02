@@ -16,7 +16,7 @@ async function tag_param(req, res, db, url_helper) {
   const tags = await Tags.by_ids(tag, db);
 
   const modifiers = modifier_params(req);
-  const possible_tags = tags.filter(uniq_by_tag_type());
+  const possible_tags = tags.filter(uniq_by_tag_type()).filter(t => t.tag_type != 'keyword');
 
   // If we can unambiguously determine the tag type, redirect to its correct URL
   if (possible_tags.length == 1)
@@ -61,7 +61,7 @@ async function handle_params(req, res, db, url_helper) {
 
   const sort_order = req.query['sort'] ? req.query['sort'] : 'slug';
 
-  const description = `All content with the ${tag_ids} ${tags[0].tag_type}`;
+  const description = `All content with the '${tag_ids}' ${tags[0].tag_type}`;
   const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"],
 				      { sort: sort_order,
 					filter: tag_extra_params(req) });
