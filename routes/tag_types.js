@@ -16,34 +16,18 @@ const error_503 = require('./error_503.js');
   end
 */
 
-function tag_types_formatter(req, res, db, url_helper, outputter) {
+function tag_types_formatter(req, res, db, url_helper) {
   tag_types.with_counts(db).
-    then(tts => tts.map(tt => format(tt, url_helper))).
-    then(tts => outputter(res, tts)).
+    then(tts => res.tag_types(req, tts, url_helper)).
     catch(err => {
       console.log(err);
       error_503(res);
     });
 } // tag_types_formatter
 
-function make_tag_types_json_formatter(db, url_helper) {
+function make_tag_types_formatter(db, url_helper) {
   return (req, res) =>
-    tag_types_formatter(req, res, db, url_helper, json_outputter);
+    tag_types_formatter(req, res, db, url_helper);
 } // make_tag_types_json_formatter
 
-function make_tag_types_csv_formatter(db, url_helper) {
-  return (req, res) =>
-    tag_types_formatter(req, res, db, url_helper, csv_outputter);
-} // make_tag_types_json_formatter
-
-exports.json = make_tag_types_json_formatter;
-exports.csv = make_tag_types_csv_formatter
-
-///////////////////////////////
-function json_outputter(res, tagtypes) {
-  res.json(result_set(tagtypes, "All tag types"));
-} // json_outputter
-
-function csv_outputter(res, tagtypes) {
-  res.csv(tagtypes, true);
-} // csv_outputter
+module.exports = make_tag_types_formatter;

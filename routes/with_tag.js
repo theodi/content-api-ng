@@ -7,8 +7,6 @@ const Artefacts = require('../mongo_documents/artefacts.js');
 const Editions = require('../mongo_documents/editions.js');
 const singular = require('pluralize').singular;
 const stream_from = require('rillet').from;
-const result_set = require('../json_format/result_set.js');
-const format_artefact = require('../json_format/artefacts.js');
 
 //////////////////////////////////////////////////////////////
 async function tag_param(req, res, db, url_helper) {

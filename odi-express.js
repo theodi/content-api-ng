@@ -6,13 +6,17 @@ const result_set = require('./json_format/result_set.js');
 const artefact_json_formatter = require('./json_format/artefacts.js');
 const artefact_csv_formatter = require('./csv_format/artefacts.js');
 
-res.artefacts = function (req_or_string, artefacts, label, url_helper) {
+res.artefacts = function(req_or_string, artefacts, label, url_helper) {
   format_and_output(this, req_or_string, 'artefacts', artefacts, label, url_helper);
 } // artefacts
 
-res.artefact = function (req_or_string, artefact, url_helper) {
+res.artefact = function(req_or_string, artefact, url_helper) {
   format_and_output(this, req_or_string, 'artefact', artefact, '', url_helper);
 } // artefact
+
+res.tag_types = function(req_or_string, tagtypes, url_helper) {
+  format_and_output(this, req_or_string, 'tagtypes', tagtypes, 'All tag types', url_helper);
+} // tag_types
 
 function format_and_output(res, req_or_string, type, objects, label, url_helper) {
   const format = find_format(req_or_string, type);
@@ -40,6 +44,10 @@ const formats = {
     'artefact' : {
       'formatter' : artefact_json_formatter,
       'outputter' : json_output
+    },
+    'tagtypes': {
+      'formatter' : identity_formatter,
+      'outputter' : json_result_set_output,
     }
   },
   'csv': {
@@ -50,6 +58,10 @@ const formats = {
     'artefact' : {
       'formatter': artefact_csv_formatter,
       'outputter': csv_output
+    },
+    'tagtypes': {
+      'formatter' : identity_formatter,
+      'outputter' : csv_output
     }
   }
 };
@@ -62,6 +74,10 @@ function find_format(req_or_string, object_type) {
 
   return format[object_type];
 } // find_format
+
+function identity_formatter(obj) {
+  return obj;
+} // identity_formatter
 
 function json_result_set_output(res, objects, label) {
   res.json(result_set(objects, label));
