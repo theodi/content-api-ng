@@ -62,6 +62,13 @@ function from_plural(plural) {
     firstOrDefault();
 } // from_plural
 
+function from_singular(singular) {
+  return stream_from(known_tag_types).
+    filter(t => t.singular == singular).
+    firstOrDefault();
+} // from_singular
+
 exports.with_counts = with_counts;
 exports.tag_types = known_tag_types;
 exports.from_plural = from_plural;
+exports.from_singular = from_singular;
