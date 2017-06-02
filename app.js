@@ -63,7 +63,7 @@ app.get('/lecture-list.json', lecture_list_json(db, url_helper));
 app.get('/section.json', section_json(db, url_helper));
 app.get('/related.json', legacy_proxy());
 app.get('/artefacts.json', legacy_proxy());
-app.get('/:artefactSlug.json', artefact_json(db, url_helper));
+app.get('/:artefactSlug.:ext', artefact_json(db, url_helper));
 app.get('/:artefactSlug/image', artefact_image(db));
 
 console.log("Available endpoints are " + app._router.stack.filter(r => r.route).map(r => r.route.path).join(', '));

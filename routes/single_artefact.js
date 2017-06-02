@@ -16,7 +16,7 @@ async function single_artefact_formatter(slug, req, res, db, url_helper) {
   if (edition_no_good(res, edition, version))
     return;
 
-  res.json(format_artefact(artefact, url_helper));
+  res.artefact(req, artefact, url_helper);
 } // artefact_formatter
 
 module.exports = single_artefact_formatter;

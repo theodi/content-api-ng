@@ -93,6 +93,8 @@ function organization_format(artefact, url_helper) {
 } // organization_format
 
 function asset_format(asset) {
+  if (!asset)
+    return {};
   return {
     "web_url": asset["file_url"],
     "versions": asset["file_versions"],
