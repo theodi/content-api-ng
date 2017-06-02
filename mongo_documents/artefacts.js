@@ -212,6 +212,7 @@ async function populate_assets(db, artefacts) {
 	stream_from(artefacts).
 	map(a => a.asset_ids).
 	flatten().
+	filter(a => a).
 	map(a => a.id).
 	filter(a => a).
 	uniq().
