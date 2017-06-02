@@ -11,7 +11,7 @@ function handle_tag_type(tag_type, res, db, url_helper) {
   // there are no tags in the db with that field
   const tag_type_name = tag_type.singular;
 
-  const label = `All ${tag_type_name} tags`;
+  const label = `All '${tag_type_name}' tags`;
 
   Tags.by_type(tag_type_name, db).
     then(ts => ts.map(tag => format_tag(tag, url_helper))).
