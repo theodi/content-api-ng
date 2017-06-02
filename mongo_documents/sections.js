@@ -5,7 +5,7 @@ async function by_id(db, section_id) {
   if (!section_tag)
     return;
 
-  attach_image(db, section_tag, 'hero_image');
+  await attach_image(db, section_tag, 'hero_image');
 
   section_tag.modules = await find_modules(db, section_tag.modules);
 
@@ -30,7 +30,7 @@ async function find_modules(db, module_ids) {
   // do in turn because we need to maintain order, and there aren't many anyway
   for (const id of module_ids) {
     const module = await module_collection.findOne({'_id': id});
-    attach_image(db, module, 'image');
+    await attach_image(db, module, 'image');
     modules.push(module);
   } // for ...
   return modules;
@@ -45,7 +45,6 @@ async function attach_image(db, obj, field) {
     return;
 
   const image = await db.asset_api_client.get(image_id);
-  obj.assets = {
-    field: image
-  };
+  obj.assets = { };
+  obj.assets[field] = image;
 } // attach_image
