@@ -9,6 +9,9 @@ const tag_json_formatter = require('./json_format/tags.js');
 const artefact_csv_formatter = require('./csv_format/artefacts.js');
 const section_csv_formatter = require('./csv_format/section.js');
 const tag_csv_formatter = require('./csv_format/tags.js');
+const lecture_csv_formatter = require('./csv_format/lectures.js');
+
+const stream_from = require('rillet').from;
 
 res.artefacts = function(req_or_string, artefacts, label, url_helper) {
   format_and_output(this, req_or_string, 'artefacts', artefacts, label, url_helper);
@@ -33,6 +36,10 @@ res.tags = function(req_or_string, tags, label, url_helper) {
 res.tag = function(req_or_string, tag, url_helper) {
   format_and_output(this, req_or_string, 'tag', tag, '', url_helper);
 } // tags
+
+res.lecture_list = function(req_or_string, lectures, url_helper) {
+  format_and_output(this, req_or_string, 'lectures', lectures, '', url_helper);
+} // lecture_list
 
 function format_and_output(res, req_or_string, type, objects, label, url_helper) {
   const format = find_format(req_or_string, type);
@@ -76,6 +83,10 @@ const formats = {
     'tag': {
       'formatter' : tag_json_formatter,
       'outputter' : json_output
+    },
+    'lectures': {
+      'formatter' : artefact_json_formatter,
+      'outputter' : lectures_json_outputter
     }
   },
   'csv': {
@@ -102,6 +113,10 @@ const formats = {
     'tag': {
       'formatter' : tag_csv_formatter,
       'outputter' : csv_output
+    },
+    'lectures': {
+      'formatter' : lecture_csv_formatter,
+      'outputter' : csv_output
     }
   }
 };
@@ -119,6 +134,22 @@ function identity_formatter(obj) {
   return obj;
 } // identity_formatter
 
+function lectures_json_outputter(res, lectures) {
+  const today = today_timestamp();
+
+  const previous = stream_from(lectures).
+	  filter(a => (new Date(a.details.start_date)).getTime() < today).
+	  toArray();
+  const upcoming = stream_from(lectures).
+  	  filter(a => (new Date(a.details.start_date)).getTime() >= today).
+	  toArray();
+
+  res.json({
+    'previous': previous,
+    'upcoming': upcoming
+  });
+} // lectures_json_outputter
+
 function json_result_set_output(res, objects, label) {
   res.json(result_set(objects, label));
 } // json_result_set_outputter
@@ -135,3 +166,9 @@ function csv_output(res, objects) {
 function arrayify(objects) {
   return Array.isArray(objects) ? objects : [ objects ];
 } // arrayify
+
+function today_timestamp() {
+  const now = new Date();
+  const today =  new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return today.getTime();
+} // today_timestamp
