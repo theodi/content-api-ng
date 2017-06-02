@@ -30,6 +30,10 @@ res.tags = function(req_or_string, tags, label, url_helper) {
   format_and_output(this, req_or_string, 'tags', tags, label, url_helper);
 } // tags
 
+res.tag = function(req_or_string, tag, url_helper) {
+  format_and_output(this, req_or_string, 'tag', tag, '', url_helper);
+} // tags
+
 function format_and_output(res, req_or_string, type, objects, label, url_helper) {
   const format = find_format(req_or_string, type);
   if (!format)
@@ -68,6 +72,10 @@ const formats = {
     'tags': {
       'formatter' : tag_json_formatter,
       'outputter' : json_result_set_output
+    },
+    'tag': {
+      'formatter' : tag_json_formatter,
+      'outputter' : json_output
     }
   },
   'csv': {
@@ -88,6 +96,10 @@ const formats = {
       'outputter' : csv_output
     },
     'tags': {
+      'formatter' : tag_csv_formatter,
+      'outputter' : csv_output
+    },
+    'tag': {
       'formatter' : tag_csv_formatter,
       'outputter' : csv_output
     }

@@ -13,7 +13,7 @@ async function tag_type_and_id_formatter(req, res, db, url_helper) {
   if (!tag)
     return error_404(res);
 
-  res.json(format_tag(tag, url_helper));
+  res.tag(req, tag, url_helper);
 } // tag_type_and_id_formatter
 
 function make_tag_type_and_id_formatter(db, url_helper) {

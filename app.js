@@ -28,8 +28,8 @@ if (!test_mode)
 //////////////////////
 const tags = require('./routes/tags.js');
 const tag_types = require('./routes/tag_types.js');
-const tags_type_or_id_json = require('./routes/tags_type_or_id.js');
-const tags_type_and_id_json = require('./routes/tags_type_id.js');
+const tags_type_or_id = require('./routes/tags_type_or_id.js');
+const tags_type_and_id = require('./routes/tags_type_id.js');
 const with_tag = require('./routes/with_tag.js');
 const latest_json = require('./routes/latest.js');
 const course_instance_json = require('./routes/course_instance.js');
@@ -52,8 +52,8 @@ app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
 app.get('/search.json', legacy_proxy('/search.json'));
 app.get('/tags.:ext', tags(db, url_helper));
 app.get('/tag_types.:ext', tag_types(db, url_helper));
-app.get('/tags/:tag_type_or_id.json', tags_type_or_id_json(db, url_helper));
-app.get('/tags/:tag_type/:tag_id.json', tags_type_and_id_json(db, url_helper));
+app.get('/tags/:tag_type_or_id.:ext', tags_type_or_id(db, url_helper));
+app.get('/tags/:tag_type/:tag_id.:ext', tags_type_and_id(db, url_helper));
 app.get('/with_tag.:ext', with_tag(db, url_helper));
 app.get('/latest.json', latest_json(db, url_helper));
 app.get('/upcoming.json', legacy_proxy());
