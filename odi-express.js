@@ -5,6 +5,7 @@ const error_503 = require('./routes/error_404');
 const result_set = require('./json_format/result_set.js');
 const artefact_json_formatter = require('./json_format/artefacts.js');
 const section_json_formatter = require('./json_format/section.js');
+const tag_types_json_formatter = require('./json_format/tag_types.js');
 const tag_json_formatter = require('./json_format/tags.js');
 const artefact_csv_formatter = require('./csv_format/artefacts.js');
 const section_csv_formatter = require('./csv_format/section.js');
@@ -69,7 +70,7 @@ const formats = {
       'outputter' : json_output
     },
     'tagtypes': {
-      'formatter' : identity_formatter,
+      'formatter' : tag_types_json_formatter,
       'outputter' : json_result_set_output,
     },
     'section': {
@@ -99,7 +100,7 @@ const formats = {
       'outputter': csv_output
     },
     'tagtypes': {
-      'formatter' : identity_formatter,
+      'formatter' : tag_types_json_formatter, // ok for CSV too!
       'outputter' : csv_output
     },
     'section': {
