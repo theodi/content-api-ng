@@ -24,8 +24,9 @@ if (!test_mode)
   db.asset_api_client = asset_api_client;
 
 //////////////////////
-const tag_types_json = require('./routes/tag_types.js');
 const tags_json = require('./routes/tags.js');
+const tag_types_json = require('./routes/tag_types.js');
+const tag_type_id_json = require('./routes/tag_type_id.js');
 const with_tag_json = require('./routes/with_tag.js');
 const latest_json = require('./routes/latest.js');
 const course_instance_json = require('./routes/course_instance.js');
@@ -49,7 +50,7 @@ app.get('/search.json', legacy_proxy('/search.json'));
 app.get('/tags.json', tags_json(db, url_helper));
 app.get('/tag_types.json', tag_types_json(db, url_helper));
 app.get('/tags/:tag_type_or_id.json', legacy_proxy());
-app.get('/tags/:tag_type/:tag_id.json', legacy_proxy());
+app.get('/tags/:tag_type/:tag_id.json', tag_type_id_json(db, url_helper));
 app.get('/with_tag.json', with_tag_json(db, url_helper));
 app.get('/latest.json', latest_json(db, url_helper));
 app.get('/upcoming.json', legacy_proxy());
