@@ -59,7 +59,7 @@ app.get('/latest.json', latest_json(db, url_helper));
 app.get('/upcoming.json', legacy_proxy());
 app.get('/course-instance.json', course_instance_json(db, url_helper));
 app.get('/lecture-list.json', lecture_list_json(db, url_helper));
-app.get('/section.json', section_json(db, url_helper));
+app.get('/section.:ext', section_json(db, url_helper));
 app.get('/related.json', legacy_proxy());
 app.get('/artefacts.json', legacy_proxy());
 app.get('/:artefactSlug.:ext', artefact_json(db, url_helper));

@@ -4,7 +4,9 @@ const error_404 = require('./routes/error_404');
 const error_503 = require('./routes/error_404');
 const result_set = require('./json_format/result_set.js');
 const artefact_json_formatter = require('./json_format/artefacts.js');
+const section_json_formatter = require('./json_format/section.js');
 const artefact_csv_formatter = require('./csv_format/artefacts.js');
+const section_csv_formatter = require('./csv_format/section.js');
 
 res.artefacts = function(req_or_string, artefacts, label, url_helper) {
   format_and_output(this, req_or_string, 'artefacts', artefacts, label, url_helper);
@@ -17,6 +19,10 @@ res.artefact = function(req_or_string, artefact, url_helper) {
 res.tag_types = function(req_or_string, tagtypes, url_helper) {
   format_and_output(this, req_or_string, 'tagtypes', tagtypes, 'All tag types', url_helper);
 } // tag_types
+
+res.section = function(req_or_string, section, url_helper) {
+  format_and_output(this, req_or_string, 'section', section, '', url_helper);
+} // section
 
 function format_and_output(res, req_or_string, type, objects, label, url_helper) {
   const format = find_format(req_or_string, type);
@@ -48,6 +54,10 @@ const formats = {
     'tagtypes': {
       'formatter' : identity_formatter,
       'outputter' : json_result_set_output,
+    },
+    'section': {
+      'formatter' : section_json_formatter,
+      'outputter' : json_output
     }
   },
   'csv': {
@@ -61,6 +71,10 @@ const formats = {
     },
     'tagtypes': {
       'formatter' : identity_formatter,
+      'outputter' : csv_output
+    },
+    'section': {
+      'formatter' : section_csv_formatter,
       'outputter' : csv_output
     }
   }

@@ -13,7 +13,7 @@ async function section_formatter(req, res, db, url_helper) {
   if (!section)
     return error_404(res);
 
-  res.json(format_section(section, url_helper));
+  res.section(req, section, url_helper);
 } // section_formatter
 
 function make_section_formatter(db, url_helper) {
