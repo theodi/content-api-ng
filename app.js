@@ -57,7 +57,7 @@ app.get('/tags/:tag_type/:tag_id.:ext', tags_type_and_id(db, url_helper));
 app.get('/with_tag.:ext', with_tag(db, url_helper));
 app.get('/latest.:ext', latest(db, url_helper));
 app.get('/upcoming.json', legacy_proxy());
-app.get('/course-instance.ext', course_instance(db, url_helper));
+app.get('/course-instance.:ext', course_instance(db, url_helper));
 app.get('/lecture-list.:ext', lecture_list(db, url_helper));
 app.get('/section.:ext', section(db, url_helper));
 app.get('/related.json', legacy_proxy());
