@@ -57,7 +57,11 @@ async function by_slug(db, slug, role = 'odi', { summary = false } = {}) {
 } // by_slug
 
 async function find(db, query, { sort, summary = false, limit, skip }) {
-  const projection = (sort == 'date') ? { 'sort': {'created_at': -1} } : undefined;
+  const projection = { }
+  if (sort == 'date')
+    projection.sort = {'created_at': -1};
+  if (sort == 'slug')
+    projection.sort = {'slug': 1};
   if (projection && limit)
     projection.limit = limit;
   if (projection && skip)
