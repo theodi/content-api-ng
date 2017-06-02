@@ -21,10 +21,7 @@ async function by_type_and_id(type, id, db) {
 function by_ids(tag_ids, db) {
   // find tags matching the supplied ids, ignoring keywords
   const query = {
-    '$and': [
-      { 'tag_id': { '$in': tag_ids.split(',') } },
-      { 'tag_type': { '$nin': ['keyword'] } }
-    ]
+    'tag_id': { '$in': tag_ids.split(',') }
   };
   return find_tags(db, query);
 } // by_ids
