@@ -30,7 +30,9 @@ async function tag_param(req, res, db, url_helper) {
 function type_param(req, res, db, url_helper) {
   const type = singular(req.query["type"]);
   const description = `All content with the ${type} type`;
-  const params = { sort: req.query["sort"] };
+  const params = { sort: 'slug' }
+  if (req.query["sort"])
+    params.sort = req.query["sort"];
   if (req.query["page"]) {
     params.limit = 30;
     params.skip = (req.query["page"]-1) * 30;
@@ -57,9 +59,11 @@ async function handle_params(req, res, db, url_helper) {
 
   const tag_ids = tags.map(t => t.tag_id).join(',');
 
+  const sort_order = req.query['sort'] ? req.query['sort'] : 'slug';
+
   const description = `All content with the ${tag_ids} ${tags[0].tag_type}`;
   const artefacts = Artefacts.by_tags(db, tag_ids, req.query["role"],
-				      { sort: req.query["sort"],
+				      { sort: sort_order,
 					filter: tag_extra_params(req) });
 
   send_artefacts(res, artefacts, description, db, url_helper);
