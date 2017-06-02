@@ -22,7 +22,7 @@ describe('With Tag', () => {
       const article = body.results[0];
       equal(article.title, 'Farmers Rule');
       assert(article.tag_ids.some(t => t == 'farmers'));
-      equal(article.details.description, '<p>A description of farmers</p>');
+      equal(article.details.description.trim(), '<p>A description of farmers</p>');
       equal(article.details.excerpt, 'A really long description of farmers');
     }
   );
