@@ -7,8 +7,6 @@ const Artefacts = require('../mongo_documents/artefacts.js');
 const Editions = require('../mongo_documents/editions.js');
 const singular = require('pluralize').singular;
 const stream_from = require('rillet').from;
-const result_set = require('../json_format/result_set.js');
-const format_artefact = require('../json_format/artefacts.js');
 
 //////////////////////////////////////////////////////////////
 async function tag_param(req, res, db, url_helper) {
@@ -39,7 +37,7 @@ function type_param(req, res, db, url_helper) {
   } // if ...
   const artefacts = Artefacts.by_type(db, type, req.query["role"], params);
 
-  send_artefacts(res, artefacts, description, db, url_helper);
+  send_artefacts(req, res, artefacts, description, db, url_helper);
 } // type_param
 
 async function handle_params(req, res, db, url_helper) {
@@ -66,20 +64,14 @@ async function handle_params(req, res, db, url_helper) {
 				      { sort: sort_order,
 					filter: tag_extra_params(req) });
 
-  send_artefacts(res, artefacts, description, db, url_helper);
+  send_artefacts(req, res, artefacts, description, db, url_helper);
 } // handle_params
 
-function send_artefacts(res, artefacts, description, db, url_helper) {
+function send_artefacts(req, res, artefacts, description, db, url_helper) {
   if (!artefacts)
     return error_404(res);
 
-  artefacts.
-    then(as => as.map(a => format_artefact(a, url_helper))).
-    then(as => res.json(result_set(as, description))).
-    catch(err => {
-      console.log(err);
-      error_503(res);
-    });
+  artefacts.then(as => res.artefacts(req, as, description, url_helper));
 } // artefacts
 
 function with_tag_formatter(req, res, db, url_helper) {

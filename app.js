@@ -1,4 +1,6 @@
 const express = require('express');
+const csv = require('csv-express');
+const odi = require('./odi-express');
 const make_url_helper = require('./lib/url_helper.js');
 const make_asset_api_client = require('./lib/asset_api.js');
 const config = require('config');
@@ -24,16 +26,16 @@ if (!test_mode)
   db.asset_api_client = asset_api_client;
 
 //////////////////////
-const tags_json = require('./routes/tags.js');
-const tag_types_json = require('./routes/tag_types.js');
-const tags_type_or_id_json = require('./routes/tags_type_or_id.js');
-const tags_type_and_id_json = require('./routes/tags_type_id.js');
-const with_tag_json = require('./routes/with_tag.js');
-const latest_json = require('./routes/latest.js');
-const course_instance_json = require('./routes/course_instance.js');
-const lecture_list_json = require('./routes/lecture_list.js');
-const section_json = require('./routes/section.js');
-const artefact_json = require('./routes/artefact.js');
+const tags = require('./routes/tags.js');
+const tag_types = require('./routes/tag_types.js');
+const tags_type_or_id = require('./routes/tags_type_or_id.js');
+const tags_type_and_id = require('./routes/tags_type_id.js');
+const with_tag = require('./routes/with_tag.js');
+const latest = require('./routes/latest.js');
+const course_instance = require('./routes/course_instance.js');
+const lecture_list = require('./routes/lecture_list.js');
+const section = require('./routes/section.js');
+const artefact = require('./routes/artefact.js');
 const artefact_image = require('./routes/image.js');
 const legacy_proxy = require('./routes/legacy_proxy.js');
 
@@ -48,19 +50,19 @@ app.get('/', (req, res) => res.send('Hello World'));
 app.get('/hello.json', (req, res) => res.json({ greeting: 'Hello World' }));
 
 app.get('/search.json', legacy_proxy('/search.json'));
-app.get('/tags.json', tags_json(db, url_helper));
-app.get('/tag_types.json', tag_types_json(db, url_helper));
-app.get('/tags/:tag_type_or_id.json', tags_type_or_id_json(db, url_helper));
-app.get('/tags/:tag_type/:tag_id.json', tags_type_and_id_json(db, url_helper));
-app.get('/with_tag.json', with_tag_json(db, url_helper));
-app.get('/latest.json', latest_json(db, url_helper));
+app.get('/tags.:ext', tags(db, url_helper));
+app.get('/tag_types.:ext', tag_types(db, url_helper));
+app.get('/tags/:tag_type_or_id.:ext', tags_type_or_id(db, url_helper));
+app.get('/tags/:tag_type/:tag_id.:ext', tags_type_and_id(db, url_helper));
+app.get('/with_tag.:ext', with_tag(db, url_helper));
+app.get('/latest.:ext', latest(db, url_helper));
 app.get('/upcoming.json', legacy_proxy());
-app.get('/course-instance.json', course_instance_json(db, url_helper));
-app.get('/lecture-list.json', lecture_list_json(db, url_helper));
-app.get('/section.json', section_json(db, url_helper));
+app.get('/course-instance.:ext', course_instance(db, url_helper));
+app.get('/lecture-list.:ext', lecture_list(db, url_helper));
+app.get('/section.:ext', section(db, url_helper));
 app.get('/related.json', legacy_proxy());
 app.get('/artefacts.json', legacy_proxy());
-app.get('/:artefactSlug.json', artefact_json(db, url_helper));
+app.get('/:artefactSlug.:ext', artefact(db, url_helper));
 app.get('/:artefactSlug/image', artefact_image(db));
 
 console.log("Available endpoints are " + app._router.stack.filter(r => r.route).map(r => r.route.path).join(', '));

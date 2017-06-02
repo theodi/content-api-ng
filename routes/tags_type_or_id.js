@@ -2,10 +2,8 @@ const error_404 = require('./error_404.js');
 const error_503 = require('./error_503.js');
 const Tags = require('../mongo_documents/tags.js');
 const Tag_types = require('../mongo_documents/tag_types.js');
-const format_tag = require('../json_format/tags.js');
-const result_set = require('../json_format/result_set.js');
 
-function handle_tag_type(tag_type, res, db, url_helper) {
+function handle_tag_type(tag_type, req, res, db, url_helper) {
   // original code has additional handling for parent_id and root_sections
   // query parameters, which involves searching by parent_id - however,
   // there are no tags in the db with that field
@@ -14,8 +12,7 @@ function handle_tag_type(tag_type, res, db, url_helper) {
   const label = `All '${tag_type_name}' tags`;
 
   Tags.by_type(tag_type_name, db).
-    then(ts => ts.map(tag => format_tag(tag, url_helper))).
-    then(ts => res.json(result_set(ts, label))).
+    then(ts => res.tags(req, ts, label, url_helper)).
     catch(err => {
       console.log(err);
       error_503(res);
@@ -43,7 +40,7 @@ function tags_type_or_id_formatter(req, res, db, url_helper) {
   const tag_type = Tag_types.from_plural(type_or_id);
 
   if (tag_type)
-    return handle_tag_type(tag_type, res, db, url_helper);
+    return handle_tag_type(tag_type, req, res, db, url_helper);
 
   return redirect_to_tag(type_or_id, res, db, url_helper);
 } // tags_type_or_id_formatter
