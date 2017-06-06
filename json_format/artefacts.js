@@ -25,7 +25,7 @@ function basic_artefact_format(artefact, url_helper) {
 function related_artefacts_format(artefact, url_helper) {
   const related = artefact.related_artefacts;
   if (!related)
-    return;
+    return [];
 
   return stream_from(related).
     map(r => related_artefact_format(r, url_helper)).
